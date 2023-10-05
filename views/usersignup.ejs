@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Signup page</title>
+</head>
+<body>
+
+    <header class="header-auth">
+        <div class="logo-container">
+            <img class="logo-img" src="/images/logo.jpeg" alt="">
+            <h3>MAKE IT GREEN</h3>
+        </div>
+    </header>
+
+    <div class="container" style="height: 600px;">
+        <h2>Sign-up</h2>
+        <hr style="background-color: white; height: 4px;">
+        <form method="post" action="/signup">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="name" required minlength="6" maxlength="15">
+            </div>
+            <div class="form-group">
+                <label for="password">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="email" required minlength="10" maxlength="25">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="password" required minlength="6" maxlength="15">
+            </div>
+            <div class="form-group">
+                <label for="password">Confirm password</label>
+                <input type="password" class="form-control" id="conpassword" name="conpassword" placeholder="re-enter password" required minlength="6" maxlength="15">
+            </div>
+            <p class="error-message"><%= message %></p>
+            <div class="botttom-login">
+                <button type="submit" class="btn btn-primary">Sign up</button>
+                <div style="display: flex; padding-top: 15px;">
+                    <p>Already a user? </p>
+                    <a  href="/login">log in</a>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" 
+    crossorigin="anonymous"></script>
+</body>
+</html>

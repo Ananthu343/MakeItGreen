@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">    
+    <title>makeitgreen </title>
+</head>
+<body>
+    <header class="header-auth">
+        <div class="logo-container">
+            <img class="logo-img" src="/images/logo.jpeg" alt="">
+            <h3>MAKE IT GREEN</h3>
+        </div>
+    </header>
+
+    
+    <div class="container">
+        <h2>Recover your password</h2>
+        <hr style="background-color: white; height: 4px;">
+        <form method="post" action="/confirmotp/<%= email %>">
+            <div class="form-group">
+                <label for="password">Enter OTP from your email</label>
+                <input type="text" class="form-control" id="otp" name="otp" placeholder="otp code" required  maxlength="6">
+            </div>
+            <!-- <p class="bottom-email">email : <%= email %></p> -->
+            <p class="error-message"><%= message %></p>
+            <div>
+                <input type="hidden" id="passmin" name="min"> 
+                 <input type="hidden" id="passsec" name="sec">
+
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <button type="submit"  class="btn btn-primary">Confirm</button>
+                <a class="btn btn-primary" href="/resendotp/<%= email %>" role="button">Resend</a>
+            </div>
+            
+        </form>
+        <div  class="bottom-email">
+            <p>expires in: <span id="min"></span>:<span id="sec"></span></p>
+        </div>
+        
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" 
+    crossorigin="anonymous"></script>
+
+    
+    <script>
+       
+
+        
+        const expirationTime = '<%= expirationTime %>';
+        const currentsec = '<%= currentsec %>';
+
+        if (expirationTime >=0 && currentsec>=0) {
+            let durationmin = expirationTime ;
+        let durationsec = currentsec;
+        const min = document.getElementById('min');
+        const sec = document.getElementById('sec');
+        const passmin = document.getElementById('passmin');
+        const passsec = document.getElementById('passsec');
+        
+        // console.log(duration);
+        function showMessage() {
+            min.textContent = durationmin;
+            sec.textContent = durationsec;
+            passmin.value = durationmin;
+            passsec.value = durationsec;
+            durationsec--;
+            if (durationsec==0) {
+                durationmin--;
+                durationsec = 59;
+            }
+            if(durationmin<=0 && durationsec<=1){
+                clearInterval(timerId);
+                min.textContent = "otp expired !"
+                sec.textContent =""
+                passmin.value = "";
+                passmin.value = "";
+                window.location.href = '/otpexpired/<%= email %>'; 
+            }
+
+        }
+
+        
+        const timerId = setInterval(showMessage,1000);
+        } else {
+            min.textContent = "otp expired !"
+            sec.textContent =""
+        }
+
+
+        
+        
+    </script>
+
+
+</body>
+</html>
