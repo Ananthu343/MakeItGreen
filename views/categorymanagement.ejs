@@ -84,7 +84,7 @@
                     </a>
                 </li>
                 <li class="side-item">
-                    <a href="#" class="nav-link text-white">
+                    <a href="/admin/productmanagement" class="nav-link text-white">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#table"></use>
                         </svg>
@@ -132,7 +132,7 @@
                                     <%= items.name%>
                                 </td>
                                 <td>
-                                    <img style="width: 200px; height: 100px;" src="<%= items.image_url %>" alt="">
+                                    <img style="width: 200px; height: 100px;" src="/<%= items.image_url[0] %>" alt="">
                                 </td>
                                 <td>
 
@@ -156,7 +156,7 @@
                 <div style="display: flex; justify-content: center;">
                     
 
-                <form class="cate-form" action="/addcategory" method="post">
+                <form class="cate-form" action="/addcategory" method="post" enctype="multipart/form-data">
                     <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600;"><u>Add Categories</u></h3>
                         <label for="">Category name:</label>
                         <input type="text" id="categoryname" name="categoryname">
@@ -166,6 +166,7 @@
                         <div class="mb-3">
                             <input class="form-control" type="file" id="imgfile" name="imgfile">
                         </div>
+                        <p style="color: red;"><%= message %></p>
                                      
                     <button  type="submit" class="btn btn-primary">Add</button>
                 </form>

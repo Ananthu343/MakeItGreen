@@ -34,12 +34,15 @@ router.post('/login',isitblocked,usercontroller.loginPost);
 router.get('/signup',usercontroller.signup);
 router.post('/signup',usercontroller.signupPost);
 router.get('/home',authenticate,usercontroller.home);
-router.get('/forgotpass',isitblocked,usercontroller.forgotpass);
+router.get('/forgotpass',usercontroller.forgotpass);
 router.post('/sendotp',usercontroller.forgotpasspost);
 router.get('/resendotp/:email',usercontroller.resend);
 router.get('/otpexpired/:email',usercontroller.otpexpired);
 router.post('/confirmotp/:email',usercontroller.confirmotp);
 router.post('/changepass/:email',usercontroller.changepass);
+router.get('/category/:id',authenticate,usercontroller.categoryPage);
+router.get('/productpage/:id',authenticate,usercontroller.product_page);
+router.post('/searchfromuser',usercontroller.search_product);
 
 router.get('/logout',usercontroller.logout);
 

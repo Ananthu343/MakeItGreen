@@ -1,5 +1,9 @@
 const usercollection = require('../models/userdb');
 const categorycollection = require('../models/categorydb');
+const productcollection = require('../models/productdb');
+const path = require('path')
+
+const fs = require('fs');
 
 const adlogin=(req,res)=>{
     if(req.session.admin){
@@ -39,7 +43,7 @@ const dashboard = async (req, res) => {
 const user_manage = async (req, res) => {
     try {
         const data = await usercollection.find();
-        res.render('usermanagement',{fulldata:data , user_data:"",message:"empty"});
+        res.render('usermanagement',{fulldata:data , user_data:""});
     } catch (error) {
         console.log("error fetching user data");
     }
@@ -74,11 +78,15 @@ const search_user = async (req,res)=>{
     console.log(username);
     try {
         const search_data = await usercollection.find({name:username});
+        
         const data = await usercollection.find();
+
+
         if(search_data){
             res.render('usermanagement',{user_data:search_data,fulldata:data})
         }else{
-            res.render('usermanagement',{fulldata:data,user_data:"",message:"User not found"})
+            console.log("worked");
+            res.render('usermanagement',{fulldata:data,user_data:"",})
 
         }
     } catch (error) {
@@ -89,7 +97,7 @@ const search_user = async (req,res)=>{
 const category_manage = async (req,res)=>{
     try {
         const category_data = await categorycollection.find();
-        res.render('categorymanagement',{fulldata:category_data});
+        res.render('categorymanagement',{fulldata:category_data,message:""});
     } catch (error) {
         console.log("error fetching categorydata");
     }
@@ -98,6 +106,22 @@ const category_manage = async (req,res)=>{
 const delete_category = async (req,res)=>{
      const cate_id = req.params.id;
      try {
+        
+           const category =  await categorycollection.findById(cate_id)
+           console.log(category.image_url[0]);
+           let imagePath = category.image_url[0];
+           if (imagePath.includes('uploads\\')) {
+            
+            imagePath = imagePath.replace('uploads\\', 'public/uploads\\');
+            console.log(imagePath);
+           }
+
+           fs.unlink(imagePath,(err)=>{
+            if (err) {
+                console.log("No image found");
+            }
+           })
+        
         await categorycollection.findByIdAndDelete(cate_id);
         res.redirect('/admin/categorymanagement');
      } catch (error) {
@@ -107,18 +131,148 @@ const delete_category = async (req,res)=>{
 
 const add_category = async (req,res)=>{
     console.log(req.body);
-    const cate_data = {
-        name: req.body.categoryname,
-        image_url: req.body.imgfile
+    console.log(req.files);
+    
+
+   const cate_names = await categorycollection.find({},{name:1,_id:0});
+    // console.log(cate_names);
+    const upper_names = cate_names.map((item)=>{
+        let name = item.name;
+        return name.toUpperCase();
+    });
+
+    let body_name = req.body.categoryname;
+    body_name = body_name.toUpperCase();
+    let flag = 0;
+    upper_names.forEach((item)=>{
+        if (item === body_name) {
+            flag = 1;
+        }
+    })
+
+    console.log(body_name);
+    console.log(upper_names);
+    if (flag == 1) {
+        const category_data = await categorycollection.find();
+        res.render('categorymanagement',{fulldata:category_data,message:"Category already exists"});
+        // res.redirect('/admin/categorymanagement');
+        } else {
+            console.log("worked");
+            let imagePath = req.files[0].path;
+            console.log(imagePath);
+            // Check if the path includes "public/" (Windows uses backslashes)
+            if (imagePath.includes('public\\')) {
+                // Remove the "public/" prefix for Windows
+                imagePath = imagePath.replace('public\\', '');
+            } else if (imagePath.includes('public/')) {
+                // Remove the "public/" prefix for Unix-like systems
+                imagePath = imagePath.replace('public/', '');
+            }
+        
+            // console.log(image);
+            const cate_data = {
+                name: req.body.categoryname,
+                image_url: imagePath
+            }
+            console.log(cate_data);
+            try {
+                await categorycollection.insertMany([cate_data]);
+               
+                res.redirect('/admin/categorymanagement');
+            } catch (error) {
+                console.log(error.message);
+                console.log("error adding category");
+            }
     }
-    console.log(cate_data);
+
+  
+}
+
+const product_manage = async (req,res)=>{
     try {
-        await categorycollection.insertMany([cate_data]);
-        res.redirect('/admin/categorymanagement');
+        const fulldata = await productcollection.find();
+        const cate_names = await categorycollection.distinct('name');
+        console.log(cate_names);
+        // res.render('productmanagement');
+        res.render('productmanagement',{fulldata,product_data:"",cate_names});
+    } catch (error) {
+        console.log("error loading product data");
+    }
+}
+
+const add_product = async (req,res)=>{
+     console.log(req.body);
+     console.log(req.files);
+     let imagePath = [];
+     const imgarray = req.files
+     imgarray.forEach(element => {
+        if (element.path) {
+            imagePath.push(element.path)
+        } else {
+            imagePath.push("");
+        }
+     });
+
+    console.log(imagePath);
+    
+    const newimagepath = imagePath.map((path)=>{
+        if (path.includes('public\\')) {
+            return path.substring(6);
+        }else if (path.includes('public/')) {
+            return path.substring(6);
+        }
+    })
+
+    console.log(newimagepath);
+    const product_data = {
+        name: req.body.product,
+        price: req.body.price,
+        quantity: req.body.quantity,
+        offer: req.body.offer,
+        description: req.body.description,
+        category: req.body.category,
+        images: newimagepath
+    }
+    console.log(product_data);
+    try {
+        await productcollection.insertMany([product_data]);
+        res.redirect('/admin/productmanagement');
     } catch (error) {
         console.log(error.message);
-        console.log("error adding category");
+        console.log("error adding product");
     }
+}
+
+const search_product = async (req,res)=>{
+    const productname = req.body.searchid;
+    console.log(productname);
+    try {
+        const search_data = await productcollection.find({name:productname});
+        const data = await productcollection.find();
+        const cate_names = await categorycollection.distinct('name');
+        if(search_data){
+            res.render('productmanagement',{product_data:search_data,fulldata:data,cate_names})
+        }else{
+            res.render('productmanagement',{fulldata:data,product_data:"",cate_names})
+
+        }
+    } catch (error) {
+     console.log("error fetching searchdata");   
+    }
+}
+
+const delete_product = async(req,res)=>{
+    const product_id = req.params.id;
+    try {
+        await productcollection.updateOne({_id:product_id},{$set:{quantity: 0}});
+        res.redirect('/admin/productmanagement');
+    } catch (error) {
+        console.log("error deleting product");
+    }
+}
+
+const wrongimageformat = (req,res)=>{
+    res.render('')
 }
 
 
@@ -142,5 +296,10 @@ module.exports ={
     search_user,
     category_manage,
     delete_category,
-    add_category
+    add_category,
+    product_manage,
+    add_product,
+    search_product,
+    delete_product,
+    wrongimageformat
 }

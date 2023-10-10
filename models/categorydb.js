@@ -5,10 +5,10 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    image_url:{
+    image_url:[{
         type: String,
         required: false
-    }
+    }]
 });
 
 const categoryCollection = new mongoose.model("categoryCollection",categorySchema);

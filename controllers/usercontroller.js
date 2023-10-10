@@ -1,7 +1,9 @@
 const usercollection = require('../models/userdb');
+const categorycollection = require('../models/categorydb');
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
 const { render } = require('ejs');
+const productCollection = require('../models/productdb');
 
 const myemail = process.env.MY_EMAIL;
 const mypass = process.env.MY_PASS;
@@ -43,10 +45,16 @@ const loginPost = async (req,res)=>{
     
 }
 
-const home = (req, res) => {
+const home = async (req, res) => {
     console.log("home get worked");
     // console.log(req.session.user);
-    res.render('userhome',{user:req.session.user});
+    try {
+       const cat_data = await categorycollection.find();
+       res.render('userhome',{cat_data});
+    } catch (error) {
+      console.log("error getting cat collection");
+    }
+    
 };
 
 const signup = (req,res)=>{
@@ -253,6 +261,52 @@ const changepass = async (req,res)=>{
 }
 
 
+const categoryPage =async (req,res)=>{
+  console.log(req.params.id)
+  try {
+    const category = await categorycollection.findById(req.params.id)
+    const fulldata = await productCollection.find({category:category.name});
+    console.log(fulldata);
+    res.render('categorypage',{fulldata});
+    console.log(category);
+  } catch (error) {
+    console.log(error.message);
+  }
+ 
+  
+}
+
+const product_page = async (req,res)=>{
+
+  const product_id = req.params.id;
+  try {
+    const product_details = await productCollection.find({_id:product_id});
+    const product_data = product_details[0];
+    console.log(product_data);
+    const image_data = product_data.images;
+    console.log(image_data);
+    res.render('productpage',{product_data,image_data});
+  } catch (error) {
+    console.log("error loading productpage");
+    console.log(error.message);
+  }
+}
+
+const search_product = async (req,res)=>{
+  console.log("hehe");
+  const product_name = req.body.productname;
+  try {
+    const fulldata = await productCollection.find({name:product_name});
+    console.log(fulldata);
+    res.render('searchpage',{fulldata});
+
+   
+  
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 
 const logout = (req,res)=>{
     console.log("logged out session destroyed"); 
@@ -273,5 +327,8 @@ module.exports={
     resend,
     otpexpired,
     confirmotp,
-    changepass
+    changepass,
+    categoryPage,
+    product_page,
+    search_product
 }
