@@ -26,5 +26,8 @@ router.get('/admin/productmanagement',authenticate,admincontroller.product_manag
 router.post('/addproduct',admincontroller.add_product)
 router.post('/search/product',admincontroller.search_product);
 router.get('/deleteproduct/:id',admincontroller.delete_product);
+router.get('/editproduct/:id',admincontroller.edit_product);
+router.get('/deleteimage/:index/:id',admincontroller.delete_image);
+router.post('/editproduct/:id',admincontroller.update_product);
 
 module.exports= router;

@@ -4,6 +4,7 @@ const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
 const { render } = require('ejs');
 const productCollection = require('../models/productdb');
+const cartcollection = require('../models/cartdb');
 
 const myemail = process.env.MY_EMAIL;
 const mypass = process.env.MY_PASS;
@@ -46,11 +47,12 @@ const loginPost = async (req,res)=>{
 }
 
 const home = async (req, res) => {
+    const logstatus = req.session.user? "logout" :  "login";
     console.log("home get worked");
     // console.log(req.session.user);
     try {
        const cat_data = await categorycollection.find();
-       res.render('userhome',{cat_data});
+       res.render('userhome',{cat_data,logstatus});
     } catch (error) {
       console.log("error getting cat collection");
     }
@@ -262,12 +264,13 @@ const changepass = async (req,res)=>{
 
 
 const categoryPage =async (req,res)=>{
+  const logstatus = req.session.user? "logout" :  "login";
   console.log(req.params.id)
   try {
     const category = await categorycollection.findById(req.params.id)
     const fulldata = await productCollection.find({category:category.name});
     console.log(fulldata);
-    res.render('categorypage',{fulldata});
+    res.render('categorypage',{fulldata,logstatus});
     console.log(category);
   } catch (error) {
     console.log(error.message);
@@ -277,7 +280,7 @@ const categoryPage =async (req,res)=>{
 }
 
 const product_page = async (req,res)=>{
-
+  const logstatus = req.session.user? "logout" :  "login";
   const product_id = req.params.id;
   try {
     const product_details = await productCollection.find({_id:product_id});
@@ -285,7 +288,7 @@ const product_page = async (req,res)=>{
     console.log(product_data);
     const image_data = product_data.images;
     console.log(image_data);
-    res.render('productpage',{product_data,image_data});
+    res.render('productpage',{product_data,image_data,logstatus});
   } catch (error) {
     console.log("error loading productpage");
     console.log(error.message);
@@ -293,12 +296,13 @@ const product_page = async (req,res)=>{
 }
 
 const search_product = async (req,res)=>{
+  const logstatus = req.session.user? "logout" :  "login";
   console.log("hehe");
   const product_name = req.body.productname;
   try {
     const fulldata = await productCollection.find({name:product_name});
     console.log(fulldata);
-    res.render('searchpage',{fulldata});
+    res.render('searchpage',{fulldata,logstatus});
 
    
   
@@ -307,11 +311,130 @@ const search_product = async (req,res)=>{
   }
 }
 
+const cart = async(req,res)=>{
+  try {
+    const logstatus = req.session.user? "logout" :  "login";
+    const cartdata = await cartcollection.find({userid:req.session.user});
+    // console.log(cartdata);
+    if(cartdata[0]){
+      let sum_subtotal = await cartcollection.aggregate([{$match:{userid:req.session.user}},{$group:{_id:null,sum:{$sum:"$subtotal"}}}]);
+      sum_subtotal = sum_subtotal[0].sum;
+      const shippingFee = 40;
+      const totalAmount = sum_subtotal + shippingFee;
+      console.log(sum_subtotal);
+      res.render('cart',{logstatus,cartdata,sum_subtotal,shippingFee,totalAmount});
+    }else{
+      sum_subtotal = "empty cart";
+      const shippingFee = "empty cart";
+      const totalAmount = "empty cart";
+      // console.log(sum_subtotal);
+      res.render('cart',{logstatus,cartdata,sum_subtotal,shippingFee,totalAmount});
+    }
+    
+  } catch (error) {
+    console.log(error.message);
+    // console.log("preshnam");
+  }
+}
+
+const addcart = async (req,res)=>{
+  const product_id = req.params.id;
+  try {
+    const product_data = await productCollection.findById(product_id);
+    const cartitem = {
+      userid : req.session.user,
+      productid : product_id,
+      productname : product_data.name,
+      image_url : product_data.images[0],
+      quantity : 1,
+      price : product_data.price,
+      subtotal : product_data.price
+    }
+    await cartcollection.insertMany([cartitem]);
+    res.redirect('back');
+  } catch (error) {
+    console.log(error.message);
+    console.log("error adding product to cart");
+  }
+}
+
+const removeproduct = async (req,res)=>{
+  const cartid = req.params.id;
+  try {
+
+    const cart = await cartcollection.findById(cartid)
+    await cartcollection.findByIdAndDelete(cartid);
+    res.redirect('back');
+} catch (error) {
+    console.log("error deleting");
+}
+}
+
+ const addQty = async (req,res)=>{
+     const cartid = req.body.id;
+     try {
+      const cartdata = await cartcollection.findById(cartid);
+      const fixedPrice = cartdata.price;
+      let currentqty = cartdata.quantity;
+      // console.log(cartid);
+      currentqty++;
+      console.log(currentqty);
+      const Subtotal = cartdata.subtotal;
+      const newSubtotal = Subtotal + fixedPrice;
+      console.log(Subtotal);
+      await cartcollection.updateOne({_id:cartid},{$set:{quantity:currentqty,subtotal:newSubtotal}})
+      return res.status(200).send()
+     } catch (error) {
+      console.log(error.message);
+      console.log("not adding qty");
+     }
+ }
+ const subQty = async (req,res)=>{
+  const cartid = req.body.id;
+  try {
+   const cartdata = await cartcollection.findById(cartid);
+   const fixedPrice = cartdata.price;
+   let currentqty = cartdata.quantity;
+   console.log(currentqty);
+   // console.log(cartid);
+   if (currentqty == 1) {
+    await cartcollection.findByIdAndDelete(cartid);
+   }else{
+   currentqty--;
+   const Subtotal = cartdata.subtotal;
+   const newSubtotal = Subtotal - fixedPrice;
+   console.log(currentqty);
+   await cartcollection.updateOne({_id:cartid},{$set:{quantity:currentqty,subtotal:newSubtotal}})
+   } 
+   return res.status(200).send()
+  
+  } catch (error) {
+   console.log(error.message);
+   console.log("not subbing qty");
+  }
+}
+
+const clearCart = async(req,res)=>{
+  console.log("worked");
+   try {
+    await cartcollection.deleteMany({userid:req.session.user});
+    res.redirect('back');
+   } catch (error) {
+    console.log(error.message);
+   }
+}
+
+const profile = (req,res)=>{
+  const username = req.session.user;
+  const logstatus = req.session.user? "logout" :  "login";
+  console.log(username);
+  res.render('userprofile',{logstatus});
+}
 
 const logout = (req,res)=>{
     console.log("logged out session destroyed"); 
     req.session.destroy(()=>{
-        res.redirect("/login");
+        res.redirect("/home");
     })
 }
 
@@ -330,5 +453,12 @@ module.exports={
     changepass,
     categoryPage,
     product_page,
-    search_product
+    search_product,
+    cart,
+    addcart,
+    removeproduct,
+    addQty,
+    subQty,
+    clearCart,
+    profile
 }

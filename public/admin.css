@@ -187,3 +187,12 @@ border: 1px solid rgba(255,255,255,0.2);
  .file-input input[type="file"] {
     display: none;
 }  
+
+.del-image{
+    width: 150px;
+    height: 100px;
+}
+.del-image:hover{
+    cursor: pointer;
+    border: 3px solid #ff0000;
+}

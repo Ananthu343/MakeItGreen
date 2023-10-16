@@ -33,16 +33,23 @@ router.get('/login',usercontroller.login);
 router.post('/login',isitblocked,usercontroller.loginPost);
 router.get('/signup',usercontroller.signup);
 router.post('/signup',usercontroller.signupPost);
-router.get('/home',authenticate,usercontroller.home);
+router.get('/home',usercontroller.home);
 router.get('/forgotpass',usercontroller.forgotpass);
 router.post('/sendotp',usercontroller.forgotpasspost);
 router.get('/resendotp/:email',usercontroller.resend);
 router.get('/otpexpired/:email',usercontroller.otpexpired);
 router.post('/confirmotp/:email',usercontroller.confirmotp);
 router.post('/changepass/:email',usercontroller.changepass);
-router.get('/category/:id',authenticate,usercontroller.categoryPage);
-router.get('/productpage/:id',authenticate,usercontroller.product_page);
+router.get('/category/:id',usercontroller.categoryPage);
+router.get('/productpage/:id',usercontroller.product_page);
 router.post('/searchfromuser',usercontroller.search_product);
+router.get('/cart',authenticate,usercontroller.cart);
+router.get('/addcart/:id',authenticate,usercontroller.addcart);
+router.get('/removecart/:id',usercontroller.removeproduct);
+router.post('/addqty',usercontroller.addQty);
+router.post('/subqty',usercontroller.subQty);
+router.get('/clearcart',usercontroller.clearCart)
+router.get('/profile',usercontroller.profile)
 
 router.get('/logout',usercontroller.logout);
 
