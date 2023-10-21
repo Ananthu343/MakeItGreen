@@ -101,11 +101,11 @@
                     </a>
                 </li>
                 <li class="side-item">
-                    <a href="#" class="nav-link text-white">
+                    <a href="/admin/ordermanagement" class="nav-link text-white">
                         <svg class="bi me-2" width="16" height="16">
                             <use xlink:href="#people-circle"></use>
                         </svg>
-                        Customers
+                        Order management
                     </a>
                 </li>
             </ul>
@@ -127,6 +127,7 @@
                             <th scope="col">sl.no</th>
                             <th scope="col">Username</th>
                             <th scope="col">Email</th>
+                            <!-- <th scope="col">Orders</th> -->
                             <th scope="col">Block/Unblock</th>
                         </tr>
                     </thead>
@@ -143,6 +144,7 @@
                                 <td>
                                     <%= items.email%>
                                 </td>
+                               
                                 <td>
                                     <% if(items.block_status=="blocked" ){%>
                                         <a href="/unblock/<%= items._id %>">

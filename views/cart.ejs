@@ -185,11 +185,13 @@
                 <input type="text" placeholder="Apply coupon" id="couponid">
                 <button type="submit" class="btn btn-success">Apply</button>
             </form>
+            <% if(totalAmount != "empty cart"){ %>
             <div style="display: flex; flex-direction: column; ">
-                <a href="#" class="btn btn-success" style=" color: white;  border-radius: 10px;" role="button"
-                    data-bs-toggle="button"> Make payment</a>
+                
+                <a href="/checkout" class="btn btn-success" style=" color: white;  border-radius: 10px;" role="button">Checkout</a>
                 <p style="color: #12DB26; align-self: center; font-size:small;">pay safe with us..</p>
             </div>
+            <% } %>
         </div>
 
     </div>

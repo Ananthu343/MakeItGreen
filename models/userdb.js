@@ -38,6 +38,14 @@ const userSchema = new mongoose.Schema({
     block_status:{
         type:String,
         required:false
+    },
+    image_url:[{
+        type: String,
+        required: false
+    }],
+    defaultAddress:{
+        type:String,
+        required:false
     }
 });
 

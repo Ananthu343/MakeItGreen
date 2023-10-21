@@ -88,10 +88,12 @@
         <div class="primary-profile">
             <div class="primary-profile-div">
                 <div style="display: flex; align-items: center; width: 20vw;  flex-direction: column;">
-                    <!-- <div class="profile-img-container">
-                        <img src="/images/silhouette-profile-pic-11.png" alt="">
-                    </div> -->
-                    <h4>Welcome back!</h4>
+                    <div class="profile-img-container">
+                        <img src="<%= userdata.image_url[0]%>" alt="">
+                    </div>
+                    <h4>
+                        <%= userdata.name %>
+                    </h4>
                 </div>
             </div>
         </div>
@@ -137,31 +139,32 @@
             <div class="detail-container">
                 <div class="subdetail-container">
 
-
+                    <form action="/saveuserprofile" method="post" enctype="multipart/form-data">
                     <div class="Customer-detail-profile">
-                         <div class="firstdetail">
-                             <p>Name : <%= userdata.name %></p>
-                             <hr>
-                             <p>Email : <%= userdata.email %></p>
-                             <hr>
-                             <p>Default address : <%= userdata.defaultAddress %></p>
-                             <hr>
-                             
-                         </div>
-                         <div class="seconddetail">
-                            <div class="profile-img-container" style="width: 250px; height: 250px;">
-                                <img src="<%= userdata.image_url[0]%>" alt="">
-                            </div>
-                            <a href="/usereditprofile" style="text-decoration: none;">
-                                <p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                                  </svg> Edit profile</p>
-                            </a>
-                         </div>
                         
+                            <div class="firstdetail">
+                                <p>Name : <input type="text" id="name" name="name" value="<%= userdata.name %>"></p>
+                                <hr>
+                                <p>Email : <input type="text" id="email" name="email" value="<%= userdata.email %>"></p>
+                                <hr>
+                                <p>Default address :
+                                    <textarea id="address" name="address" class="form-control"
+                                        placeholder="Write your address here." rows="4" required="required"
+                                        data-error="Please, fill this area."><%= userdata.defaultAddress %></textarea></p>
+                                <hr>
+                                <button style="border-radius: 10px; background-color: blueviolet; color: white;" type="submit">Save</button>
+                            </div>
+                            <div class="seconddetail">
+                                <p><u>Profile picture</u></p>
+                                <div class="mb-3">
+                                    <input class="form-control" type="file" id="imgfile" name="imgfile" accept="image/jpeg , image/png">
+                                </div>
+                              
+                            </div>
+                        
+                                           
                     </div>
-
+                </form>
                     
                 </div>
             </div>
@@ -169,14 +172,6 @@
     </div>
 
 
-
-
-    <!-- <div style="display: flex; justify-content: start; width: 100%; height: 80px; align-items: center; padding-left: 150px; ">
-        <h3 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
-                Shopping cart
-            
-        </h3>
-    </div> -->
 
 
     <footer>

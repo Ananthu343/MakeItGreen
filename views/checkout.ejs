@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Cart</title>
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpeg">
+
+</head>
+
+<body style="background-image: none; overflow-x: hidden;">
+    <header class="header-home">
+        <nav class="navbar navbar-expand-lg navbar-light ">
+            <div class="container-fluid" style="display: flex; justify-content: space-between;">
+                <a href="/home" style="text-decoration: none;">
+                    <div class="logo-container">
+
+                        <img class="logo-img" src="/images/logo.jpeg" alt="">
+                        <h3>MAKE IT GREEN</h3>
+                    </div>
+                </a>
+                <div>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon "></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <form class="d-flex" style="margin-right: 80px;" action="/searchfromuser" method="post">
+                                <input id="productname" name="productname" class="form-control me-2" type="search"
+                                    placeholder="Search product" aria-label="Search" style="border-radius: 19px;">
+                                <button class="btn " type="submit"
+                                    style="background-color: #5A875E; border-radius: 74px; color: white;">Search</button>
+                            </form>
+                            <a class="nav-link active link-header" aria-current="page" href="/cart"
+                                style="margin-right: 20px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-cart3" viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                </svg>
+                                Cart</a>
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle link-header" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 20px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="16" fill="currentColor"
+                                        class="bi bi-person-circle " viewBox="0 0 16 16">
+                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                        <path fill-rule="evenodd"
+                                            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                                    </svg>
+                                    My profile
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <% if(logstatus=="logout" ){ %>
+                                        <li><a class="dropdown-item" href="#">Orders</a></li>
+                                        <li><a class="dropdown-item" href="#">Wishlist </a></li>
+                                        <% } %>
+                                            <li><a class="dropdown-item" href="/<%=logstatus %>">
+                                                    <%=logstatus %>
+                                                </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="list-container container-fluid">
+        <div>
+            <a class="list" href="/wishlist">My Wishlist</a>
+            <a class="list" href="">Category</a>
+            <a class="list" href="/specialoffers">Special offers</a>
+        </div>
+    </div>
+    <div class="row">
+        <div style="height: fit-content; display: flex; justify-content: center; align-items: center; background: #76cf7a;
+        background: -webkit-linear-gradient(0deg, #76cf7a 0%, #292939 100%);
+        background: linear-gradient(0deg, #76cf7a 0%, #292939 100%); color: white;">
+            <p class="title1">Decor Your World With Live Plants</p>
+            <p class="title2">“we serve the true choice of live plants.”</p>
+        </div>
+    </div>
+    </div>
+    <div
+        style="display: flex; justify-content: start; width: 100%; height: 80px; align-items: center; padding-left: 150px; ">
+        <h3 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>
+                Checkout
+            </u>
+        </h3>
+    </div>
+    <div class="cart-main-container">
+        <div class="cart-sub-container">
+            <h6>Delivery address :</h6>
+            <div class=" default-address" id="displaySelection">
+                <p id="selectedOptionText"
+                    style="margin-left: 10px;white-space: pre-line; word-wrap: break-word; width: 600px; word-spacing: 5px;">
+                </p>
+            </div>
+            <div class="checkout-address-container">
+
+                <details class="styled">
+                    <summary><br>Select other address</summary>
+                    <div class="description">
+                        <form style="margin-top: 20px;" id="radioForm">
+
+                            <% addressdata.forEach((item)=>{ %>
+                                <div class="address-list">
+                                    <div style="display: flex; ">
+                                        <input type="radio" id="deliveryaddress" name="deliveryaddress"
+                                            value="<%=item.name%>, <%=item.address%>, <%=item.city%>, <%=item.state%>, pincode: <%=item.pincode%>, Mobile: <%=item.phone%>">
+                                        <p
+                                            style="margin-left: 10px;white-space: pre-line; word-wrap: break-word; width: 600px;">
+                                            <%= item.name + ", " + item.address +", "+ item.city +" , "+item.state + ", " +" Pin code : "+ item.pincode %>
+                                            <%=" Mobile : "+ item.phone %>
+                                        </p>
+                                    </div>
+                                    
+                                    
+  
+                                </div>
+                                <br>
+                                    <% }) %>
+                        </form>
+                    </div>
+                </details>
+                <br><br>
+                
+            </div>
+            <div class=" paymentselector-container">
+                                                <div
+                                                    style="height: 130px; display: flex; flex-direction: column; justify-content: space-between;">
+                                                    <div class="head-paymentselector">
+                                                        <h5>Select payment method</h5>
+                                                    </div>
+                                                    <div class="subhead-paymentselector">
+                                                        <button>UPI / Others</button>
+                                                        <button>Wallet</button>
+                                                        <button onclick="cod()">Cash on delivery</button>
+                                                    </div>
+
+                                                </div>
+                                                <div class="paymentdetail-container">
+                                                    <div style="height: 200px; width: 500px;">
+                                                        <h6 id="currentdate"></h6>
+                                                        <p id="shippingAddress" style="font-size: larger; "></p>
+                                                    </div>
+                                                    <div style="display: flex; flex-direction: column; ">
+
+                                                        <button id="placebutton"></button>
+
+
+                                                    </div>
+                                                </div>
+                                    </div>
+                                </div>
+
+
+                                <div class=" subtotal-container">
+                                    <h2 style="color: black;"><u>Order summary</u></h2>
+                                    <div>
+                                        <p>Total items : <%= totalQty %>
+                                        </p>
+                                        <p>Sub total : <%= sum_subtotal %>/- </p>
+                                        <p>Shipping fee : <%= shippingFee %>/- </p>
+                                        <hr>
+                                        <h5 style="color: green;">Total amount : <%= totalAmount %>/- </h5>
+                                    </div>
+                                </div>
+
+                    </div>
+
+
+
+                    <footer>
+                        <div class="container bg-dark" style="height: auto;">
+                            <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
+                                <div class="col mb-3">
+                                    <div class="logo-container">
+                                        <img class="logo-img" src="/images/logo.jpeg" alt="">
+                                        <h3>MAKE IT GREEN</h3>
+                                    </div>
+                                    <p class="text-muted">© 2022</p>
+                                </div>
+
+                                <div class="col mb-3">
+
+                                </div>
+
+                                <div class="col mb-3">
+                                    <h5>Section</h5>
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a>
+                                        </li>
+                                        <li class="nav-item mb-2"><a href="#"
+                                                class="nav-link p-0 text-muted">Features</a></li>
+                                        <li class="nav-item mb-2"><a href="#"
+                                                class="nav-link p-0 text-muted">Pricing</a></li>
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a>
+                                        </li>
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="col mb-3">
+                                    <h5>Section</h5>
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a>
+                                        </li>
+                                        <li class="nav-item mb-2"><a href="#"
+                                                class="nav-link p-0 text-muted">Features</a></li>
+                                        <li class="nav-item mb-2"><a href="#"
+                                                class="nav-link p-0 text-muted">Pricing</a></li>
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a>
+                                        </li>
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="col mb-3">
+                                    <h5>Section</h5>
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a>
+                                        </li>
+                                        <li class="nav-item mb-2"><a href="#"
+                                                class="nav-link p-0 text-muted">Features</a></li>
+                                        <li class="nav-item mb-2"><a href="#"
+                                                class="nav-link p-0 text-muted">Pricing</a></li>
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a>
+                                        </li>
+                                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </footer>
+                        </div>
+                    </footer>
+
+
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                        crossorigin="anonymous"></script>
+
+                    <script>
+                        const displaySelection = document.getElementById('displaySelection');
+                        const selectedOptionText = document.getElementById('selectedOptionText');
+                        const radioButtons = document.querySelectorAll('input[type="radio"]');
+                        let selectedOption = '<%= userdata.defaultAddress%>'
+                        selectedOptionText.textContent = selectedOption;
+                        // Add an event listener to each radio button
+                        radioButtons.forEach(radioButton => {
+                            radioButton.addEventListener('change', function () {
+                                selectedOption = document.querySelector('input[name="deliveryaddress"]:checked').value;
+
+
+                                selectedOptionText.textContent = selectedOption;
+                            });
+                        });
+                        var paymentMode = "";
+                    </script>
+                    <script>
+                        function cod() {
+                            var currentDate = new Date();
+                            var day = currentDate.getDate();
+                            var month = currentDate.getMonth() + 1;
+                            var year = currentDate.getFullYear();
+                            var formattedDate = day + '/' + month + '/' + year;
+                            var date = document.getElementById('currentdate');
+                            var shippingAddress = document.getElementById('shippingAddress');
+                            var placebutton = document.getElementById('placebutton');
+                            paymentMode = "COD";
+                            date.innerHTML = ' Date: ' + formattedDate;
+                            shippingAddress.innerHTML = 'Shipping to: ' + selectedOption;
+                            placebutton.innerText = "Place order";
+
+
+                        }
+                        document.getElementById('placebutton').addEventListener('click', () => {
+                            const checkoutdata = {
+                                shippingAddress: selectedOption,
+                                paymentMode: paymentMode
+                            };
+                            fetch('/confirmorder', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(checkoutdata),
+                            })
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    // On success, redirect to a new page
+                                    window.location.href = '/confirmation'; // Replace with the URL of the new page
+                                })
+                                .catch((err) => {
+                                    console.log("error on fetching confirmorder");
+                                    console.log(err.message);
+                                })
+                        });
+                    </script>
+
+
+
+</body>
+
+</html>

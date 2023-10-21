@@ -4,6 +4,7 @@ const productcollection = require('../models/productdb');
 const path = require('path')
 
 const fs = require('fs');
+const ordercollection = require('../models/orderdb');
 
 const adlogin = (req, res) => {
     if (req.session.admin) {
@@ -333,6 +334,18 @@ const update_product = async (req,res)=>{
     }
 }
 
+const order_manage = async(req,res)=>{
+    try {
+        console.log("working aanu");
+        const orderdata = await ordercollection.find();
+        console.log(orderdata);
+        res.render('ordermanagement',{orderdata});
+    } catch (error) {
+        console.log("error in ordermanagement");
+        console.log(error.message);
+    }
+}
+
 
 const adlogout = (req, res) => {
     console.log("logged out session destroyed");
@@ -361,5 +374,6 @@ module.exports = {
     delete_product,
     edit_product,
     delete_image,
-    update_product
+    update_product,
+    order_manage
 }

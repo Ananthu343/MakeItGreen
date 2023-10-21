@@ -49,8 +49,18 @@ router.get('/removecart/:id',usercontroller.removeproduct);
 router.post('/addqty',usercontroller.addQty);
 router.post('/subqty',usercontroller.subQty);
 router.get('/clearcart',usercontroller.clearCart)
-router.get('/profile',usercontroller.profile)
-
+router.get('/profile',authenticate,usercontroller.profile)
+router.get('/profile/address',authenticate,usercontroller.profileaddress);
+router.post('/addAddress',usercontroller.addAddress)
+router.post('/updatedefaultaddress',usercontroller.updatedefaultaddress);
+router.get('/deleteaddress/:id',usercontroller.deleteAddress);
+router.get('/usereditprofile',authenticate,usercontroller.usereditprofile);
+router.post('/saveuserprofile',usercontroller.saveuserprofile);
+router.get('/checkout',authenticate,usercontroller.checkout);
+router.post('/confirmorder',usercontroller.confirmorder);
+router.get('/confirmation',usercontroller.confirmation);
+router.get('/profile/myorders',authenticate,usercontroller.myorders);
+router.post('/cancelorder',usercontroller.cancelorder);
 router.get('/logout',usercontroller.logout);
 
 

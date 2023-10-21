@@ -81,17 +81,19 @@
             <a class="list" href="/specialoffers">Special offers</a>
         </div>
     </div>
-    
+
     </div>
 
     <div class="profile-main-container ">
         <div class="primary-profile">
             <div class="primary-profile-div">
                 <div style="display: flex; align-items: center; width: 20vw;  flex-direction: column;">
-                    <!-- <div class="profile-img-container">
-                        <img src="/images/silhouette-profile-pic-11.png" alt="">
-                    </div> -->
-                    <h4>Welcome back!</h4>
+                    <div class="profile-img-container">
+                        <img src="/<%= userdata.image_url[0]%>" alt="">
+                    </div>
+                    <h4>
+                        <%= userdata.name %>
+                    </h4>
                 </div>
             </div>
         </div>
@@ -105,7 +107,7 @@
                 </a>
                 <hr>
                 <ul class="nav nav-pills flex-column mb-auto">
-                    
+
                     <li class="side-item">
                         <a href="/profile" class="nav-link text-white">
                             <svg class="bi me-2" width="16" height="16">
@@ -130,7 +132,7 @@
                             Delivery address
                         </a>
                     </li>
-                   
+
                 </ul>
                 <hr>
             </div>
@@ -138,45 +140,93 @@
                 <div class="subdetail-container">
 
 
-                    <div class="Customer-detail-profile">
-                         <div class="firstdetail">
-                             <p>Name : <%= userdata.name %></p>
-                             <hr>
-                             <p>Email : <%= userdata.email %></p>
-                             <hr>
-                             <p>Default address : <%= userdata.defaultAddress %></p>
-                             <hr>
-                             
-                         </div>
-                         <div class="seconddetail">
-                            <div class="profile-img-container" style="width: 250px; height: 250px;">
-                                <img src="<%= userdata.image_url[0]%>" alt="">
+                    <div class="Customer-address-profile">
+                        <h6>Default address :</h6>
+                        <div class="default-address">
+                            <p id="defaultBox"
+                                style="margin-left: 10px;white-space: pre-line; word-wrap: break-word; width: 600px;">
+                            </p>
+
+                        </div>
+                        <form style="margin-top: 20px;" id="radioForm">
+
+                            <h6> <u>Select default address</u>
+                                <button
+                                    style="margin-left: 15px; background-color: lightgreen; border-radius: 10px;"
+                                    type="submit">Save</button>
+                            </h6>
+
+                            <% addressdata.forEach((item)=>{ %>
+                                <div class="address-list">
+                                    <div style="display: flex; ">
+                                        <input type="radio" id="defaultaddress" name="defaultaddress"
+                                            value="<%=item._id %>">
+                                        <p
+                                            style="margin-left: 10px;white-space: pre-line; word-wrap: break-word; width: 600px;">
+                                            <%= item.name + ", " + item.address +", "+ item.city +" , "+item.state + ", " +" Pin code : "+ item.pincode %>
+                                            <%=" Mobile : "+ item.phone %>
+                                        </p>
+                                    </div>
+                                    
+                                    <a href=" /deleteaddress/<%=item._id%>">
+                                                <svg style="color: red;" xmlns="http://www.w3.org/2000/svg" width="16"
+                                                    height="16" fill="currentColor" class="bi bi-trash3"
+                                                    viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                                </svg>
+                                                </a>
+
                             </div>
-                            <a href="/usereditprofile" style="text-decoration: none;">
-                                <p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                                  </svg> Edit profile</p>
-                            </a>
-                         </div>
-                        
+                                    <br>
+                                    <% }) %>
+                        </form>
+
+
+                        <form class="addressadd" action="/addAddress" method="post" enctype="multipart/form-data">
+                            <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600;">
+                                Add new address</h3>
+
+                            <div>
+                                <label for="firstName">First name: </label>
+                                <input type="text" id="firstName" name="firstName">
+                                &nbsp;
+                                <label for="lastName">Last name:</label>
+                                <input type="text" id="lastName" name="lastName">
+                            </div>
+                            <div>
+                                <label for="mobile">Mobile: </label>
+                                <input type="text" id="mobile" name="mobile">
+                                &nbsp;
+                                <label for="pin">Pin code:</label>
+                                <input type="text" id="pin" name="pin">
+                            </div>
+                            <div>
+                                <label for="city">City: </label>
+                                <input type="text" id="city" name="city">
+                                &nbsp;
+                                <label for="state">state:</label>
+                                <input type="text" id="state" name="state">
+                            </div>
+                            <div>
+                                <label for="address">Address : </label>
+                                <textarea id="address" name="address" class="form-control"
+                                    placeholder="Write your address here." rows="4" required="required"
+                                    data-error="Please, fill this area."></textarea>
+                            </div>
+
+
+
+                            <br> <br><br>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </form>
                     </div>
 
-                    
+
                 </div>
             </div>
         </div>
     </div>
-
-
-
-
-    <!-- <div style="display: flex; justify-content: start; width: 100%; height: 80px; align-items: center; padding-left: 150px; ">
-        <h3 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
-                Shopping cart
-            
-        </h3>
-    </div> -->
 
 
     <footer>
@@ -235,6 +285,34 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
+    <script>
+        const radioForm = document.getElementById("radioForm");
+
+        radioForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const selectedValue = formData.get("defaultaddress");
+
+            // Send the selected value to the backend
+            fetch("/updatedefaultaddress", {
+                method: "POST",
+                body: JSON.stringify({ choice: selectedValue }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then((res)=>{
+                console.log(res);
+               return window.location.reload()
+
+            })
+
+        });
+
+
+        const pTag = document.getElementById("defaultBox");
+
+        pTag.innerHTML = '<%= userdata.defaultAddress %>';
+    </script>
 
 
 
