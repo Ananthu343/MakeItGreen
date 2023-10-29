@@ -631,6 +631,7 @@ details[open].styled summary::before{
 -moz-box-shadow: -2px 3px 10px 3px #dddddd;
 box-shadow: -2px 3px 10px 3px #dddddd;
     margin-top: 20px;
+    margin-bottom: 20px;
     width: 900px;
     height: auto;
     padding-top: 10px;
@@ -648,3 +649,10 @@ box-shadow: -2px 3px 10px 3px #dddddd;
     width: 900px;
     justify-content: space-evenly;
 }
+.wish {
+    color: #ffffff; /* Default color */
+  }
+  
+  .wish-clicked {
+    color: #f00; /* Color when clicked */
+  }

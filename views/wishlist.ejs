@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>My orders</title>
+    <title>Cart</title>
     <link rel="icon" type="image/x-icon" href="/images/logo.jpeg">
 
 </head>
@@ -18,9 +18,9 @@
             <div class="container-fluid" style="display: flex; justify-content: space-between;">
                 <a href="/home" style="text-decoration: none;">
                     <div class="logo-container">
-
-                        <img class="logo-img" src="/images/logo.jpeg" alt="">
-                        <h3>MAKE IT GREEN</h3>
+                        
+                            <img class="logo-img" src="/images/logo.jpeg" alt="">
+                            <h3>MAKE IT GREEN</h3>
                     </div>
                 </a>
                 <div>
@@ -59,7 +59,7 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <% if(logstatus=="logout" ){ %>
-                                        <li><a class="dropdown-item" href="/home">Home</a></li>
+                                        <li><a class="dropdown-item" href="#">Orders</a></li>
                                         <li><a class="dropdown-item" href="#">Wishlist </a></li>
                                         <% } %>
                                             <li><a class="dropdown-item" href="/<%=logstatus %>">
@@ -81,94 +81,80 @@
             <a class="list" href="/specialoffers">Special offers</a>
         </div>
     </div>
+    <div class="row">
+        <div style="height: fit-content; display: flex; justify-content: center; align-items: center; background: #76cf7a;
+        background: -webkit-linear-gradient(0deg, #76cf7a 0%, #292939 100%);
+        background: linear-gradient(0deg, #76cf7a 0%, #292939 100%); color: white;">
+            <p class="title1">Decor Your World With Live Plants</p>
+            <p class="title2">“we serve the true choice of live plants.”</p>
+        </div>
+    </div>
+    </div>
+    <div style="display: flex; justify-content: start; width: 100%; height: 80px; align-items: center; padding-left: 150px; ">
+        <h3 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>
+                My wishlist
+            </u>
+        </h3>
+    </div>
+    <div class="cart-main-container">
+        <div class="cart-sub-container ">
+            <div class="cart-table shadow p-3 mb-5 bg-body rounded">
+                <table class="table " style="background-color: #D9D9D9;">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col">Product name</th>
+                            <th scope="col">Unit price</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% wishlistdata.forEach((item)=>{ %>
+
+                            <tr style="background-color: white;height: 100px;">
+                                <th scope="row">
+                                    <a href="/removeWishlist/<%= item._id %>">
+                                        <svg style="color: red;" xmlns="http://www.w3.org/2000/svg" width="16"
+                                            height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                            <path
+                                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </a>
+                                </th>
+                                <td><img style="width: 100px; height: 80px;" src="<%= item.images %>" alt=""></td>
+                                <td>
+                                    <%= item.name %>
+                                </td>
+                                <td>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                                        <path
+                                            d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z" />
+                                    </svg>
+                                    <%= item.price %>
+                                </td>
+                                <td>
+                                    
+
+                                </td>
+                                
+                            </tr>
+                            <% }) %>
+
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+        
 
     </div>
-
-    <div class="profile-main-container ">
-        <div class="primary-profile">
-            <div class="primary-profile-div">
-                <div style="display: flex; align-items: center; width: 20vw;  flex-direction: column;">
-                    <div class="profile-img-container">
-                        <img src="/<%= userdata.image_url[0]%>" alt="">
-                    </div>
-                    <h4>
-                        <%= userdata.name %>
-                    </h4>
-                </div>
-            </div>
-        </div>
-        <div class="secondary-profile">
-            <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 20vw; height: auto;">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                    <svg class="bi me-2" width="40" height="32">
-                        <use xlink:href="#bootstrap"></use>
-                    </svg>
-                    <span class="fs-4">Contents</span>
-                </a>
-                <hr>
-                <ul class="nav nav-pills flex-column mb-auto">
-
-                    <li class="side-item">
-                        <a href="/profile" class="nav-link text-white">
-                            <svg class="bi me-2" width="16" height="16">
-                                <use xlink:href="#speedometer2"></use>
-                            </svg>
-                            About me
-                        </a>
-                    </li>
-                    <li class="side-item">
-                        <a href="/profile/myorders" class="nav-link text-white">
-                            <svg class="bi me-2" width="16" height="16">
-                                <use xlink:href="#table"></use>
-                            </svg>
-                            My orders
-                        </a>
-                    </li>
-                    <li class="side-item">
-                        <a href="/profile/address" class="nav-link text-white">
-                            <svg class="bi me-2" width="16" height="16">
-                                <use xlink:href="#grid"></use>
-                            </svg>
-                            Delivery address
-                        </a>
-                    </li>
-
-                </ul>
-                <hr>
-            </div>
-            <div class="detail-container">
-                <div class="subdetail-container">
-
-
-                    <div class="Customer-order-profile">
-                        <h3><u>Order history</u></h3>
-                        <% orderdata.reverse().forEach((item)=>{ %>
-                        <div class="order-container">
-                            <div>
-                               <p id="orderid"><b>Order number:</b> #<%=item.orderid %></p>
-                               <p style="color: green;" id="orderstatus"><b>Status:</b> <%=item.status %></p>
-                               <% if(item.status == "Confirmed") {%>
-                               <p id="expectedby"><b>Expected by:</b> <%=item.expectedBy %></p>
-                               <a  href="" onclick="cancelOrder('<%= item.id %>')">Cancel order</a>
-                               <% } %>
-                            </div>
-                            <% item.itemsname.forEach((name,index)=>{ %>
-                                <div style="width: 900px; height: 80px; display: flex; justify-content: space-evenly; margin-top: 5px; align-items: center;">
-                                 <img style="width: 40px;" src="<%= item.itemsimage[index] %>" alt="">    
-                                 <p><%= name %></p>    
-                                 <p >Qty : <%= item.quantity[index] %></p>
-                                 <p >Price : <%= item.subtotal[index] %></p>
-                                </div>
-                            <% }) %>
-                            <p style="width: 800px; margin-top: 20px;"> <b>Shipping to : </b><%= item.shippingAddress %></p>
-                        </div>
-                        <% }) %>
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
+    <div
+        style="display: flex; justify-content: start; width: 100%; height: 80px; align-items: center; padding-left: 150px; ">
+        <h3 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>
+                You may also like..
+            </u></h3>
     </div>
 
 
@@ -228,26 +214,7 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
-        <script>
-            function cancelOrder(orderid) {
-                console.log("workeddd");
-                fetch("/cancelorder", {
-                method: "POST",
-                body: JSON.stringify({ id: orderid }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }).then((res)=>{
-                // console.log(res);
-               return window.location.reload()
-
-            })
-            }
-
-            
-        </script>
    
-
 
 
 </body>

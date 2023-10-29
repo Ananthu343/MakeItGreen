@@ -9,7 +9,9 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Admin-productmanage</title>
     <link rel="icon" type="image/x-icon" href="/images/logo.jpeg">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css">
+    
+    
 </head>
 
 <body style="background-image: none;">
@@ -303,7 +305,9 @@
                             <div>
                                 <label for="imgfile" class="mb-3">
                                     <span>Select Images:</span>
-                                    <input type="file" id="imgfile" name="imgfile" multiple accept="image/jpeg , image/png">
+                                    <input type="file" id="imageInput" name="imgfile" multiple accept="image/jpeg , image/png">
+                                    <div id="imagePreview"></div>
+                                    <button id="cropButton" type="button">Crop</button>
                                 </label>
                             </div>
                         </div>
@@ -379,8 +383,70 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
         </script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
+    <script>
+      document.getElementById('imageInput').addEventListener('change', function () {
+  const imagePreview = document.getElementById('imagePreview');
+  let croppedData; // Variable to store the cropped image data
+
+  Array.from(this.files).forEach((file) => {
+    const image = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      image.src = e.target.result;
+      image.style.maxWidth = '100%';
+      image.style.height = 'auto';
+
+      // Append the image to the preview container
+      imagePreview.appendChild(image);
+
+      // Initialize Cropper.js on the image
+      const cropper = new Cropper(image, {
+        aspectRatio: 1, // Adjust as needed
+        crop: function (event) {
+          // Get the cropped data as needed
+          croppedData = cropper.getCroppedCanvas();
+        },
+      });
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  // Add a click event listener to the "Crop" button
+  let saveButton = document.getElementById('cropButton');
+    saveButton.textContent = 'Save';
+    saveButton.onclick = function() {
+      // Loop through the croppers and save each cropped image
+      croppers.forEach((cropper, index) => {
+        let canvas = cropper.getCroppedCanvas();
+        canvas.toBlob(function(blob) {
+          // Create a new blob URL for the cropped image
+          let croppedImageUrl = URL.createObjectURL(blob);
+          let fileName = `cropped_${index}.jpeg`;
+
+          const file = new File([blob], fileName, {
+            type: 'image/jpeg'
+          });
+          selectedFiles.push(file)
+          // Create a new FormData object and append the Blob
+          let formData = new FormData();
+          formData.append(`croppedImage_${index}`, file);
+
+        }, 'image/jpeg');
+      });
+      const dataTransfer = new DataTransfer();
+      selectedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+
+      });
+      fileInput.files = dataTransfer.files;
+    };
+});
 
 
+    </script>
 </body>
 
 </html>

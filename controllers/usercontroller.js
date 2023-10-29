@@ -7,6 +7,9 @@ const productCollection = require('../models/productdb');
 const cartcollection = require('../models/cartdb');
 const addresscollection = require('../models/addressdb');
 const ordercollection = require('../models/orderdb');
+const bannercollection = require('../models/bannerdb');
+const wishlistcollection = require('../models/wishlistdb')
+
 const { json } = require('express');
 
 const myemail = process.env.MY_EMAIL;
@@ -54,8 +57,9 @@ const home = async (req, res) => {
   console.log("home get worked");
   // console.log(req.session.user);
   try {
+    const banner_data = await bannercollection.find();
     const cat_data = await categorycollection.find();
-    res.render('userhome', { cat_data, logstatus });
+    res.render('userhome', { cat_data, logstatus,bannerdata : banner_data });
   } catch (error) {
     console.log("error getting cat collection");
   }
@@ -701,6 +705,46 @@ const confirmation =async (req,res)=>{
     }
  }
 
+ const addwish = async(req,res)=>{
+  const productId = req.body.product_id;
+  const user = req.session.user;
+  try {
+    await wishlistcollection.updateOne({username: user},{ $push: { product_id: productId } },{upsert : true});
+  } catch (error) {
+    console.log("error in add to wishlist");
+    console.log(error.message);
+  }
+ }
+
+ const wishlist = async(req,res)=>{
+  const user = req.session.user;
+  const logstatus = req.session.user ? "logout" : "login";
+  try {
+    const wishlistdata = await wishlistcollection.find({username: user});
+    const product_id = wishlistdata[0].product_id;
+
+    let productdata = await productCollection.find({ _id: { $in: product_id } }) ;
+    console.log(productdata);
+    res.render('wishlist',{logstatus,wishlistdata : productdata});
+  } catch (error) {
+    console.log("error in rendering wishlist");
+    console.log(error.message);
+  }
+ }
+
+ const removeWishlist = async (req,res)=>{
+  const productid = req.params.id;
+  const user = req.session.user; 
+  try {
+    await wishlistcollection.updateOne({username : user},{$pull:{product_id : productid}})
+    res.redirect('back');
+  } catch (error) {
+    console.log("error in removing wishlist");
+    console.log(error.message);
+  }
+ }
+
+
 
 const logout = (req, res) => {
   console.log("logged out session destroyed");
@@ -742,5 +786,8 @@ module.exports = {
   confirmorder,
   confirmation,
   myorders,
-  cancelorder
+  cancelorder,
+  addwish,
+  wishlist,
+  removeWishlist
 }

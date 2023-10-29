@@ -61,6 +61,9 @@ router.post('/confirmorder',usercontroller.confirmorder);
 router.get('/confirmation',usercontroller.confirmation);
 router.get('/profile/myorders',authenticate,usercontroller.myorders);
 router.post('/cancelorder',usercontroller.cancelorder);
+router.post('/addwish',authenticate,usercontroller.addwish);
+router.get('/wishlist',authenticate,usercontroller.wishlist);
+router.get('/removeWishlist/:id',authenticate,usercontroller.removeWishlist)
 router.get('/logout',usercontroller.logout);
 
 

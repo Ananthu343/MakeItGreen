@@ -1,6 +1,10 @@
 const usercollection = require('../models/userdb');
 const categorycollection = require('../models/categorydb');
 const productcollection = require('../models/productdb');
+const bannercollection = require('../models/bannerdb');
+const couponcollection = require('../models/coupondb');
+
+
 const path = require('path')
 
 const fs = require('fs');
@@ -202,8 +206,8 @@ const product_manage = async (req, res) => {
 }
 
 const add_product = async (req, res) => {
-    console.log(req.body);
-    console.log(req.files);
+    // console.log(req.body);
+    console.log(req.file);
     let imagePath = [];
     const imgarray = req.files
     imgarray.forEach(element => {
@@ -296,25 +300,25 @@ const delete_image = async (req, res) => {
     }
 }
 
-const update_product = async (req,res)=>{
-       const product_id = req.params.id;
-       console.log(req.body);
-       let imagePath = [];
-       const imgarray = req.files
-       imgarray.forEach(element => {
-           if (element.path) {
-               imagePath.push(element.path)
-           } else {
-               imagePath.push("");
-           }
-       });
-       const newimagepath = imagePath.map((path) => {
+const update_product = async (req, res) => {
+    const product_id = req.params.id;
+    console.log(req.body);
+    let imagePath = [];
+    const imgarray = req.files
+    imgarray.forEach(element => {
+        if (element.path) {
+            imagePath.push(element.path)
+        } else {
+            imagePath.push("");
+        }
+    });
+    const newimagepath = imagePath.map((path) => {
         if (path.includes('public\\')) {
             return path.substring(6);
         } else if (path.includes('public/')) {
             return path.substring(6);
         }
-        })
+    })
 
     console.log(newimagepath);
     const product_data = {
@@ -327,21 +331,166 @@ const update_product = async (req,res)=>{
         images: newimagepath
     }
     try {
-        await productcollection.updateOne({_id:product_id},{$set:product_data},{upsert:true})
+        await productcollection.updateOne({ _id: product_id }, { $set: product_data }, { upsert: true })
         res.redirect('/admin/productmanagement');
     } catch (error) {
-        
+
     }
 }
 
-const order_manage = async(req,res)=>{
+const order_manage = async (req, res) => {
     try {
         console.log("working aanu");
         const orderdata = await ordercollection.find();
-        console.log(orderdata);
-        res.render('ordermanagement',{orderdata});
+        // console.log(orderdata);
+        res.render('ordermanagement', { orderdata });
     } catch (error) {
         console.log("error in ordermanagement");
+        console.log(error.message);
+    }
+}
+
+const confirmorder = async (req, res) => {
+    console.log("workedddconfirm");
+    const orderid = req.body.id;
+    console.log(orderid);
+    try {
+        await ordercollection.updateOne({ _id: orderid }, { $set: { status: "Confirmed" } });
+        res.status(200).send('order confirmed');
+    } catch (error) {
+        console.log("error in confirming order");
+        console.log(error.message);
+    }
+}
+const deliveredorder = async (req, res) => {
+    console.log("workeddddelivered");
+    const orderid = req.body.id;
+    console.log(orderid);
+    try {
+        await ordercollection.updateOne({ _id: orderid }, { $set: { status: "Delivered" } });
+        res.status(200).send('order Delivered');
+    } catch (error) {
+        console.log("error in delivering order");
+        console.log(error.message);
+    }
+}
+
+const pendingorder = async (req, res) => {
+    console.log("workeddddpending");
+    const orderid = req.body.id;
+    console.log(orderid);
+    try {
+        await ordercollection.updateOne({ _id: orderid }, { $set: { status: "Pending" } });
+        res.status(200).send('order pending');
+    } catch (error) {
+        console.log("error in pending order");
+        console.log(error.message);
+    }
+}
+
+const banner_manage = async (req, res) => {
+    try {
+        const bannerdata = await bannercollection.find();
+        res.render('bannermanagement', { fulldata : bannerdata });
+    } catch (error) {
+        console.log("error in banner manage");
+        console.log(error.message);
+    }
+}
+
+const add_banner = async (req,res)=>{
+    try {
+        console.log("worked");
+        let imagePath = req.files[0].path;
+        console.log(imagePath);
+        // Check if the path includes "public/" (Windows uses backslashes)
+        if (imagePath.includes('public\\')) {
+            // Remove the "public/" prefix for Windows
+            imagePath = imagePath.replace('public\\', '');
+        } else if (imagePath.includes('public/')) {
+            // Remove the "public/" prefix for Unix-like systems
+            imagePath = imagePath.replace('public/', '');
+        }
+
+        // console.log(image);
+        const banner_data = {
+            name: req.body.bannername,
+            description : req.body.description,
+            image_url: imagePath
+        }
+        console.log(banner_data);
+        try {
+            await bannercollection.insertMany([banner_data]);
+
+            res.redirect('/admin/bannermanagement');
+        } catch (error) {
+            console.log(error.message);
+            console.log("error adding banner");
+        }
+    } catch (error) {
+        console.log("error in banner");
+        console.log(error.message);
+    }
+} 
+
+
+const delete_banner = async (req,res)=>{
+    const banner_id = req.params.id;
+    // console.log(banner_id);
+    try {
+
+        const banner = await bannercollection.findById(banner_id)
+        let imagePath = banner.image_url[0];
+        if (imagePath.includes('uploads\\')) {
+
+            imagePath = imagePath.replace('uploads\\', 'public/uploads\\');
+            console.log(imagePath);
+        }
+
+        fs.unlink(imagePath, (err) => {
+            if (err) {
+                console.log("No image found");
+            }
+        })
+
+        await bannercollection.findByIdAndDelete(banner_id);
+        res.redirect('/admin/bannermanagement');
+    } catch (error) {
+        console.log("error deleting banner");
+    }
+}
+
+const coupon_manage = async (req,res)=>{
+    try {
+        const fulldata = await couponcollection.find();
+        res.render('couponmanagement',{fulldata});
+    } catch (error) {
+        console.log("error in coupon manage");
+        console.log(error.message);
+    }
+}
+
+const add_coupon = async(req,res)=>{
+    const coupondata = {
+        code : req.body.couponcode,
+        discountValue : req.body.discountval
+    }
+    try {
+        await couponcollection.insertMany([coupondata]);
+        res.redirect('/admin/couponmanagement');
+    } catch (error) {
+        console.log("error in adding coupon");
+        console.log(error.message);
+    }
+}
+
+const delete_coupon = async(req,res)=>{
+    const couponId = req.params.id; 
+    try {
+        await couponcollection.findByIdAndDelete(couponId);
+        res.redirect('/admin/couponmanagement');
+    } catch (error) {
+        console.log("error in deleting coupon");
         console.log(error.message);
     }
 }
@@ -375,5 +524,14 @@ module.exports = {
     edit_product,
     delete_image,
     update_product,
-    order_manage
+    order_manage,
+    confirmorder,
+    deliveredorder,
+    pendingorder,
+    banner_manage,
+    add_banner,
+    delete_banner,
+    coupon_manage,
+    add_coupon,
+    delete_coupon
 }
