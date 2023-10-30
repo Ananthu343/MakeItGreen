@@ -28,6 +28,10 @@ const cartSchema = new mongoose.Schema({
     subtotal: {
         type: Number,
         required:true
+    },
+    discount :{
+        type : Number,
+        required : false
     }
 })
 

@@ -1,5 +1,7 @@
 var express = require('express');
 const usercollection = require('../models/userdb');
+const cartcollection = require('../models/cartdb');
+
 var router = express.Router();
 
 const usercontroller = require('../controllers/usercontroller');
@@ -20,6 +22,22 @@ async function isitblocked(req,res,next) {
         // next()
     }
 }
+
+async function cartempty(req,res,next) {
+    try {
+        const data = await cartcollection.findOne({userid : req.session.user});
+        if (data) {
+            next();
+        }else {
+            res.redirect('/cart');
+        }
+        
+    } catch (error) {
+        console.log("error checking cartempty");
+        res.redirect('/cart');
+    }
+}
+
 
 function authenticate(req, res, next) {
     console.log("authenticating");
@@ -56,7 +74,7 @@ router.post('/updatedefaultaddress',usercontroller.updatedefaultaddress);
 router.get('/deleteaddress/:id',usercontroller.deleteAddress);
 router.get('/usereditprofile',authenticate,usercontroller.usereditprofile);
 router.post('/saveuserprofile',usercontroller.saveuserprofile);
-router.get('/checkout',authenticate,usercontroller.checkout);
+router.get('/checkout',cartempty,authenticate,usercontroller.checkout);
 router.post('/confirmorder',usercontroller.confirmorder);
 router.get('/confirmation',usercontroller.confirmation);
 router.get('/profile/myorders',authenticate,usercontroller.myorders);
@@ -64,6 +82,7 @@ router.post('/cancelorder',usercontroller.cancelorder);
 router.post('/addwish',authenticate,usercontroller.addwish);
 router.get('/wishlist',authenticate,usercontroller.wishlist);
 router.get('/removeWishlist/:id',authenticate,usercontroller.removeWishlist)
+router.post('/applycoupon',authenticate,usercontroller.applycoupon);
 router.get('/logout',usercontroller.logout);
 
 

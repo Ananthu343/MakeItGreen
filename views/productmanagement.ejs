@@ -111,6 +111,22 @@
                         Order management
                     </a>
                 </li>
+                <li class="side-item">
+                    <a href="/admin/bannermanagement" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#people-circle"></use>
+                        </svg>
+                        Banner management
+                    </a>
+                </li>
+                <li class="side-item">
+                    <a href="/admin/couponmanagement" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#people-circle"></use>
+                        </svg>
+                        Coupon management
+                    </a>
+                </li>
             </ul>
             <hr>
         </div>
@@ -385,9 +401,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
     <script>
+        let fileInput=document.getElementById('imageInput')
       document.getElementById('imageInput').addEventListener('change', function () {
   const imagePreview = document.getElementById('imagePreview');
   let croppedData; // Variable to store the cropped image data
+  let cropper
 
   Array.from(this.files).forEach((file) => {
     const image = new Image();
@@ -402,7 +420,7 @@
       imagePreview.appendChild(image);
 
       // Initialize Cropper.js on the image
-      const cropper = new Cropper(image, {
+      cropper = new Cropper(image, {
         aspectRatio: 1, // Adjust as needed
         crop: function (event) {
           // Get the cropped data as needed
@@ -413,29 +431,28 @@
 
     reader.readAsDataURL(file);
   });
-
+  let file
+  let selectedFiles=[]
   // Add a click event listener to the "Crop" button
   let saveButton = document.getElementById('cropButton');
     saveButton.textContent = 'Save';
     saveButton.onclick = function() {
       // Loop through the croppers and save each cropped image
-      croppers.forEach((cropper, index) => {
         let canvas = cropper.getCroppedCanvas();
         canvas.toBlob(function(blob) {
           // Create a new blob URL for the cropped image
           let croppedImageUrl = URL.createObjectURL(blob);
-          let fileName = `cropped_${index}.jpeg`;
-
-          const file = new File([blob], fileName, {
-            type: 'image/jpeg'
-          });
-          selectedFiles.push(file)
-          // Create a new FormData object and append the Blob
-          let formData = new FormData();
-          formData.append(`croppedImage_${index}`, file);
-
+          let fileName = `cropped_1.jpeg`;
+          file = new File([blob], fileName, {
+              type: 'image/jpeg'
+            });
+              selectedFiles.push(file)
+            // Create a new FormData object and append the Blob
+            let formData = new FormData();
+            formData.append(`croppedImage_1`, file);
+            
         }, 'image/jpeg');
-      });
+        
       const dataTransfer = new DataTransfer();
       selectedFiles.forEach(file => {
         dataTransfer.items.add(file);

@@ -11,10 +11,13 @@ const bannercollection = require('../models/bannerdb');
 const wishlistcollection = require('../models/wishlistdb')
 
 const { json } = require('express');
+const couponCollection = require('../models/coupondb');
+const Razorpay = require('razorpay');
 
 const myemail = process.env.MY_EMAIL;
 const mypass = process.env.MY_PASS;
-
+const keyId =  process.env.RAZORPAY_ID_KEY;
+const secretkey = process.env.RAZORPAY_SECRET_KEY;
 
 
 
@@ -580,20 +583,26 @@ const saveuserprofile = async (req,res) =>{
 }
 
 const checkout = async (req,res)=>{
+  console.log('workkk');
   const logstatus = req.session.user ? "logout" : "login";
   const user = req.session.user;
   try {
+      const cartdata = await cartcollection.find({userid : user});
+      const discountval = cartdata[0].discount; 
       let sum_subtotal = await cartcollection.aggregate([{ $match: { userid : user } }, { $group: { _id: null, sum: { $sum: "$subtotal" } } }]);
       let totalQty = await cartcollection.aggregate([{ $match: { userid : user } }, { $group: { _id: null, sum: { $sum: "$quantity" } } }]);
       totalQty = totalQty[0].sum;
       sum_subtotal = sum_subtotal[0].sum;
       const shippingFee = 40;
-      const totalAmount = sum_subtotal + shippingFee;
+      let totalAmount = sum_subtotal + shippingFee;
+      if (discountval) {
+        totalAmount = totalAmount - discountval;
+      }
     
     let userdata = await usercollection.find({name:req.session.user});
     userdata = userdata[0];
     const addressdata = await addresscollection.find({username:user});
-    res.render('checkout',{logstatus,addressdata,userdata,totalQty,totalAmount,shippingFee,sum_subtotal});
+    res.render('checkout',{logstatus,addressdata,userdata,totalQty,totalAmount,shippingFee,sum_subtotal,discountval});
 
 
   } catch (error) {
@@ -650,11 +659,27 @@ const confirmorder = async (req,res)=>{
         quantity : products_qty
       }
       console.log(orderdata);
+      if (orderdata.paymentMode == "COD") {
+        res.json({ message: 'COD' });
+      } else {
+        let amount = req.body.amount;
+        let instance = new Razorpay({key_id: keyId , key_secret : secretkey});
+        let order = await instance.orders.create({
+          amount: amount * 100,
+          currency: "INR",
+          receipt: "receipt1",
+        })
+        res.status(201).json({
+          message: "ONLINE",
+          order,
+          amount,
+        })
+      }
       await ordercollection.insertMany([orderdata])
       await cartcollection.deleteMany({userid : req.session.user});
       // const data = await cartcollection.find({userid : req.session.user});
       // console.log(data);
-      res.json({ message: 'Operation completed successfully' });
+      
     } catch (error) {
       console.log("Error in adding order db");
       console.log(error.message);
@@ -744,6 +769,25 @@ const confirmation =async (req,res)=>{
   }
  }
 
+ const applycoupon = async(req,res)=>{
+  const code = req.body.couponcode;
+  let shippingfee = 40;
+  try {
+    const coupondata = await couponCollection.find({code:code});
+    const discount = coupondata[0].discountValue;
+    await cartcollection.updateOne({userid : req.session.user},{$set:{discount: discount}})
+    let sum_subtotal = await cartcollection.aggregate([{ $match: { userid: req.session.user } }, { $group: { _id: null, sum: { $sum: "$subtotal" } } }]);
+    sum_subtotal = sum_subtotal[0].sum + shippingfee;
+    const totalAmount = sum_subtotal - discount;
+
+    res.status(200).json({ value: discount ,amount : totalAmount});
+  } catch (error) {
+    res.status(200).json({ value: "null" });
+    console.log('coupon apply failed');
+    console.log(error.message);
+  }
+     
+ }
 
 
 const logout = (req, res) => {
@@ -789,5 +833,6 @@ module.exports = {
   cancelorder,
   addwish,
   wishlist,
-  removeWishlist
+  removeWishlist,
+  applycoupon
 }

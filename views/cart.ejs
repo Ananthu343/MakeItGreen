@@ -179,16 +179,18 @@
                 <p>Sub total : <%= sum_subtotal %>/- </p>
                 <p>Shipping fee : <%= shippingFee %>/-  </p>
                 <hr>
-                <h5>Total amount : <%= totalAmount %>/- </h5>
+                <h5 id="totalamt"> /- </h5>
             </div>
-            <form action="/coupon" method="post">
-                <input type="text" placeholder="Apply coupon" id="couponid">
-                <button type="submit" class="btn btn-success">Apply</button>
-            </form>
+            <div style="display: flex;">
+                <input type="text" placeholder="Apply coupon" id="couponcode">
+                <button type="submit" class="btn btn-success" onclick="coupon()">Apply</button>
+            </div>
+            <p id="err"></p>
+
             <% if(totalAmount != "empty cart"){ %>
             <div style="display: flex; flex-direction: column; ">
                 
-                <a href="/checkout" class="btn btn-success" style=" color: white;  border-radius: 10px;" role="button">Checkout</a>
+                <a  href="/checkout" class="btn btn-success" style=" color: white;  border-radius: 10px;" role="button">Checkout</a>
                 <p style="color: #12DB26; align-self: center; font-size:small;">pay safe with us..</p>
             </div>
             <% } %>
@@ -262,7 +264,10 @@
     <script>
         const addItems = document.querySelectorAll('.add-element');
         const subItems = document.querySelectorAll('.sub-element');
+        var totalAmount = document.getElementById("totalamt");
 
+        totalAmount.textContent = 'Total amount : <%= totalAmount %> /-'
+        
         addItems.forEach(item => {
             item.addEventListener('click', () => {
                 const id = item.getAttribute('data-id');
@@ -299,6 +304,40 @@
                     });
             });
         });
+
+
+        function coupon() {
+            const couponcode = document.getElementById('couponcode').value;
+            const err = document.getElementById("err");
+            
+            fetch('/applycoupon', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ couponcode })
+                })
+                .then((response) => response.json())
+                    .then(data => {
+                        console.log(data);
+                        var discountval = data.value;
+                        var totalamount = data.amount
+                        if (discountval === "null") {
+                            err.textContent = "Invalid coupon";
+                        } else {
+                            console.log(totalamount);
+                            totalAmount.textContent = `Total amount : ${totalamount} /-`;
+                            err.textContent = "coupon applies!!! your saved Rs :"+ discountval ;
+                        }
+                    })
+
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+        }
+        
+
+       
     </script>
 
 

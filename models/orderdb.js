@@ -41,7 +41,8 @@ const orderSchema = new mongoose.Schema({
     quantity :[{
         type :Number,
         required : true
-    }]
+    }],
+    
 });
 
 const ordercollection = new mongoose.model("ordercollection",orderSchema);//creating collection
