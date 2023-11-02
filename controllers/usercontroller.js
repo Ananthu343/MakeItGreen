@@ -761,7 +761,7 @@ const myorders = async (req, res) => {
 const cancelorder = async (req, res) => {
   // console.log("workeddd");
   const orderid = req.body.id;
-  console.log(orderid);
+  // console.log(orderid);
   try {
     await ordercollection.updateOne({ _id: orderid }, { $set: { status: "Cancelled" } });
     const orderdata = await ordercollection.findById(orderid);
@@ -778,6 +778,23 @@ const cancelorder = async (req, res) => {
     } catch (error) {
       console.log("Error in restocking");
       console.log(error.message);
+    }
+    const user = req.session.user;
+    let userid = await usercollection.find({ name: user }, { _id: 1 });
+    userid = userid[0]._id;
+    if (orderdata.paymentMode != "COD") {
+      let refundAmount = orderdata.subtotal.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+      const method = "Refunded";
+      const date = new Date();
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const currentdate = day + "/" + month + "/" + year;
+      let currentamt = await walletcollection.find({ userid: userid }, { balance: 1, _id: 0 });
+      currentamt = currentamt[0].balance;
+      let newAmt = currentamt + refundAmount;
+      await walletcollection.updateOne({ userid: userid }, { balance: newAmt }, { upsert: true });
+      await walletcollection.updateOne({ userid: userid }, { $push: { amountHistory: refundAmount, date: currentdate, method: method } });
     }
     res.status(200).send('order cancelled');
   } catch (error) {

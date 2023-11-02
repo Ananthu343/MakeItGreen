@@ -202,6 +202,7 @@
                         <% wallethistory.amountHistory.reverse().forEach((item,index)=>{ %>
                             <div class="order-container" style="color: black;">
                                 <div>
+                                    <p>#<%= index + 1 %></p>
                                     <p id="orderid"><b>Order date : <%= newdate[index] %></b></p>
                                     <p style="color: green;" id="orderstatus">Status:<b>
                                             <%= newmethod[index] %>
