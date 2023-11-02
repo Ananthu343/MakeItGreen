@@ -9,6 +9,8 @@ const addresscollection = require('../models/addressdb');
 const ordercollection = require('../models/orderdb');
 const bannercollection = require('../models/bannerdb');
 const wishlistcollection = require('../models/wishlistdb')
+const walletcollection = require('../models/walletdb');
+
 
 const { json } = require('express');
 const couponCollection = require('../models/coupondb');
@@ -16,7 +18,7 @@ const Razorpay = require('razorpay');
 
 const myemail = process.env.MY_EMAIL;
 const mypass = process.env.MY_PASS;
-const keyId =  process.env.RAZORPAY_ID_KEY;
+const keyId = process.env.RAZORPAY_ID_KEY;
 const secretkey = process.env.RAZORPAY_SECRET_KEY;
 
 
@@ -62,7 +64,7 @@ const home = async (req, res) => {
   try {
     const banner_data = await bannercollection.find();
     const cat_data = await categorycollection.find();
-    res.render('userhome', { cat_data, logstatus,bannerdata : banner_data });
+    res.render('userhome', { cat_data, logstatus, bannerdata: banner_data });
   } catch (error) {
     console.log("error getting cat collection");
   }
@@ -354,38 +356,38 @@ const cart = async (req, res) => {
 }
 
 const addcart = async (req, res) => {
-  
+
   const product_id = req.params.id;
-  let cartdata = await cartcollection.find({productid : product_id,userid:req.session.user});
-  
+  let cartdata = await cartcollection.find({ productid: product_id, userid: req.session.user });
+
   try {
     if (cartdata[0]) {
       const fixedPrice = cartdata[0].price;
-    let currentqty = cartdata[0].quantity;
-   
-    currentqty++;
-    console.log(currentqty);
-    const Subtotal = cartdata[0].subtotal;
-    const newSubtotal = Subtotal + fixedPrice;
-    console.log(Subtotal);
-    
-    await cartcollection.updateOne({productid : product_id,userid:req.session.user}, { $set: { quantity: currentqty, subtotal: newSubtotal } })
-    res.redirect('back');
+      let currentqty = cartdata[0].quantity;
+
+      currentqty++;
+      console.log(currentqty);
+      const Subtotal = cartdata[0].subtotal;
+      const newSubtotal = Subtotal + fixedPrice;
+      console.log(Subtotal);
+
+      await cartcollection.updateOne({ productid: product_id, userid: req.session.user }, { $set: { quantity: currentqty, subtotal: newSubtotal } })
+      res.redirect('back');
     } else {
       const product_data = await productCollection.findById(product_id);
       const cartitem = {
-      userid: req.session.user,
-      productid: product_id,
-      productname: product_data.name,
-      image_url: product_data.images[0],
-      quantity: 1,
-      price: product_data.price,
-      subtotal: product_data.price
+        userid: req.session.user,
+        productid: product_id,
+        productname: product_data.name,
+        image_url: product_data.images[0],
+        quantity: 1,
+        price: product_data.price,
+        subtotal: product_data.price
+      }
+      await cartcollection.insertMany([cartitem]);
+      res.redirect('back');
     }
-    await cartcollection.insertMany([cartitem]);
-    res.redirect('back');
-    }
-    
+
   } catch (error) {
     console.log(error.message);
     console.log("error adding product to cart");
@@ -473,64 +475,64 @@ const profile = async (req, res) => {
 
 }
 
-const profileaddress = async(req,res)=>{
+const profileaddress = async (req, res) => {
   const logstatus = req.session.user ? "logout" : "login";
   console.log(req.session.user);
   try {
-    let userdata = await usercollection.find({name:req.session.user})
-    const addressdata = await addresscollection.find({username: req.session.user});
+    let userdata = await usercollection.find({ name: req.session.user })
+    const addressdata = await addresscollection.find({ username: req.session.user });
     userdata = userdata[0];
     // console.log(userdata);
-    res.render('profileaddress',{logstatus,userdata,addressdata})
+    res.render('profileaddress', { logstatus, userdata, addressdata })
   } catch (error) {
-    
+
   }
 }
 
 
 
-const addAddress = async (req,res)=>{
-   const username = req.session.user;
-   const fullname = req.body.firstName +" "+ req.body.lastName;
-   const data = {
-    username : username,
-    address : req.body.address,
-    phone : req.body.mobile,
-    pincode : req.body.pin,
-    city : req.body.city,
-    name : fullname,
-    state : req.body.state
-   }
-   console.log(data);
-   try {
+const addAddress = async (req, res) => {
+  const username = req.session.user;
+  const fullname = req.body.firstName + " " + req.body.lastName;
+  const data = {
+    username: username,
+    address: req.body.address,
+    phone: req.body.mobile,
+    pincode: req.body.pin,
+    city: req.body.city,
+    name: fullname,
+    state: req.body.state
+  }
+  console.log(data);
+  try {
     if (username != undefined) {
       await addresscollection.insertMany([data]);
       res.redirect('back');
     }
-    
-   } catch (error) {
-      console.log("error adding address");
-      console.log(error.message);
-      res.redirect('/login');
-   }
+
+  } catch (error) {
+    console.log("error adding address");
+    console.log(error.message);
+    res.redirect('/login');
+  }
 }
 
-const updatedefaultaddress = async(req,res)=>{
-      const addressid = req.body.choice;
-      const username = req.session.user;
-      try {
-        const addressdata = await addresscollection.findById(addressid);
-        const fullAddress = addressdata.name + ", " + addressdata.address +", "+ addressdata.city +", "+addressdata.state + ", " +"Pin code : "+ addressdata.pincode + "   Mobile : "+ addressdata.phone;
-        console.log(fullAddress);
-        await usercollection.updateOne({name:username},{$set:{defaultAddress:fullAddress}});
-        return res.status(200).send('updation done')
-      } catch (error) {
-        console.log("error in defaultaddress");
-        console.log(error.message);
-      }
+const updatedefaultaddress = async (req, res) => {
+  const addressid = req.body.choice;
+  const username = req.session.user;
+  try {
+    const addressdata = await addresscollection.findById(addressid);
+    const fullAddress = addressdata.name + ", " + addressdata.address + ", " + addressdata.city + ", " + addressdata.state + ", " + "Pin code : " + addressdata.pincode + "   Mobile : " + addressdata.phone;
+    console.log(fullAddress);
+    await usercollection.updateOne({ name: username }, { $set: { defaultAddress: fullAddress } });
+    return res.status(200).send('updation done')
+  } catch (error) {
+    console.log("error in defaultaddress");
+    console.log(error.message);
+  }
 }
 
-const deleteAddress = async(req,res)=>{
+const deleteAddress = async (req, res) => {
   const addressid = req.params.id;
   try {
     await addresscollection.findByIdAndDelete(addressid);
@@ -541,253 +543,365 @@ const deleteAddress = async(req,res)=>{
   }
 }
 
-const usereditprofile = async(req,res)=>{
+const usereditprofile = async (req, res) => {
   const logstatus = req.session.user ? "logout" : "login";
   // console.log("worked");
   try {
-    let userdata = await usercollection.find({name:req.session.user});
+    let userdata = await usercollection.find({ name: req.session.user });
     userdata = userdata[0];
     console.log(userdata);
-    res.render('profileEdit',{userdata,logstatus})
+    res.render('profileEdit', { userdata, logstatus })
   } catch (error) {
-    
-  }
-} 
 
-const saveuserprofile = async (req,res) =>{
-   const username = req.session.user;
-   try {
-    let imagePath = req.files[0].path;
-        // console.log(imagePath);
-        // Check if the path includes "public/" (Windows uses backslashes)
-        if (imagePath.includes('public\\')) {
-            // Remove the "public/" prefix for Windows
-            imagePath = imagePath.replace('public\\', '');
-        } else if (imagePath.includes('public/')) {
-            // Remove the "public/" prefix for Unix-like systems
-            imagePath = imagePath.replace('public/', '');
-        }
-        const newdata = {
-          name:req.body.name ,
-          email: req.body.email,
-          defaultAddress: req.body.address, 
-          image_url: imagePath
-        }
-        // console.log(newdata);
-    await usercollection.updateOne({name:username},{$set:newdata});
-    res.redirect('/profile');
-   } catch (error) {
-    console.log("error saving profile");
-    console.log(error.message);
-   }
+  }
 }
 
-const checkout = async (req,res)=>{
+const saveuserprofile = async (req, res) => {
+  const username = req.session.user;
+  try {
+    let imagePath = req.files[0].path;
+    // console.log(imagePath);
+    // Check if the path includes "public/" (Windows uses backslashes)
+    if (imagePath.includes('public\\')) {
+      // Remove the "public/" prefix for Windows
+      imagePath = imagePath.replace('public\\', '');
+    } else if (imagePath.includes('public/')) {
+      // Remove the "public/" prefix for Unix-like systems
+      imagePath = imagePath.replace('public/', '');
+    }
+    const newdata = {
+      name: req.body.name,
+      email: req.body.email,
+      defaultAddress: req.body.address,
+      image_url: imagePath
+    }
+    // console.log(newdata);
+    await usercollection.updateOne({ name: username }, { $set: newdata });
+    res.redirect('/profile');
+  } catch (error) {
+    console.log("error saving profile");
+    console.log(error.message);
+  }
+}
+
+const checkout = async (req, res) => {
   console.log('workkk');
   const logstatus = req.session.user ? "logout" : "login";
   const user = req.session.user;
   try {
-      const cartdata = await cartcollection.find({userid : user});
-      const discountval = cartdata[0].discount; 
-      let sum_subtotal = await cartcollection.aggregate([{ $match: { userid : user } }, { $group: { _id: null, sum: { $sum: "$subtotal" } } }]);
-      let totalQty = await cartcollection.aggregate([{ $match: { userid : user } }, { $group: { _id: null, sum: { $sum: "$quantity" } } }]);
-      totalQty = totalQty[0].sum;
-      sum_subtotal = sum_subtotal[0].sum;
-      const shippingFee = 40;
-      let totalAmount = sum_subtotal + shippingFee;
-      if (discountval) {
-        totalAmount = totalAmount - discountval;
-      }
-    
-    let userdata = await usercollection.find({name:req.session.user});
+    const cartdata = await cartcollection.find({ userid: user });
+    const discountval = cartdata[0].discount;
+    let sum_subtotal = await cartcollection.aggregate([{ $match: { userid: user } }, { $group: { _id: null, sum: { $sum: "$subtotal" } } }]);
+    let totalQty = await cartcollection.aggregate([{ $match: { userid: user } }, { $group: { _id: null, sum: { $sum: "$quantity" } } }]);
+    totalQty = totalQty[0].sum;
+    sum_subtotal = sum_subtotal[0].sum;
+    const shippingFee = 40;
+    let totalAmount = sum_subtotal + shippingFee;
+    if (discountval) {
+      totalAmount = totalAmount - discountval;
+    }
+
+    let userdata = await usercollection.find({ name: req.session.user });
     userdata = userdata[0];
-    const addressdata = await addresscollection.find({username:user});
-    res.render('checkout',{logstatus,addressdata,userdata,totalQty,totalAmount,shippingFee,sum_subtotal,discountval});
+    const addressdata = await addresscollection.find({ username: user });
+    res.render('checkout', { logstatus, addressdata, userdata, totalQty, totalAmount, shippingFee, sum_subtotal, discountval });
 
 
   } catch (error) {
     console.log("error in checkout");
     console.log(error.message);
   }
- 
+
 }
 
-const confirmorder = async (req,res)=>{
-    console.log(req.body);
-    const min = 1000000;
-    const max = 9999999;
-    const ordernumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    const date = new Date();
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const newday = day + 5;
-    const expecteddate = newday+"/"+month+"/"+year;
-    try {
-      let products_name = await cartcollection.find({userid: req.session.user},{_id : 0,productname : 1});
-      let products_img = await cartcollection.find({userid: req.session.user},{_id : 0,image_url : 1});
-      let products_qty = await cartcollection.find({userid: req.session.user},{_id : 0,quantity : 1});
-      let products_subtotal = await cartcollection.find({userid: req.session.user},{_id : 0,subtotal : 1});
-      
-      products_img = products_img.map((value)=>{
-        return value.image_url[0];
+const confirmorder = async (req, res) => {
+  // console.log(req.body);
+  const min = 1000000;
+  const max = 9999999;
+  const ordernumber = Math.floor(Math.random() * (max - min + 1)) + min;
+  const date = new Date();
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  const newday = day + 5;
+  const expecteddate = newday + "/" + month + "/" + year;
+  const currentdate = day + "/" + month + "/" + year;
+  let flag = true;
+  try {
+    let products_name = await cartcollection.find({ userid: req.session.user }, { _id: 0, productname: 1 });
+    let products_img = await cartcollection.find({ userid: req.session.user }, { _id: 0, image_url: 1 });
+    let products_qty = await cartcollection.find({ userid: req.session.user }, { _id: 0, quantity: 1 });
+    let products_subtotal = await cartcollection.find({ userid: req.session.user }, { _id: 0, subtotal: 1 });
+
+    products_img = products_img.map((value) => {
+      return value.image_url[0];
+    })
+    // console.log(products_img);
+    products_name = products_name.map((value) => {
+      return value.productname;
+    })
+    // console.log(products_name);
+    products_qty = products_qty.map((value) => {
+      return value.quantity;
+    })
+    // console.log(products_qty);
+    products_subtotal = products_subtotal.map((value) => {
+      return value.subtotal;
+    })
+    // console.log(products_subtotal);
+
+    const orderdata = {
+      userid: req.session.user,
+      orderid: ordernumber,
+      shippingAddress: req.body.shippingAddress,
+      itemsname: products_name,
+      itemsimage: products_img,
+      paymentMode: req.body.paymentMode,
+      status: "Confirmed",
+      expectedBy: expecteddate,
+      subtotal: products_subtotal,
+      quantity: products_qty
+    }
+    // console.log(orderdata);
+    if (orderdata.paymentMode == "COD") {
+      res.json({ message: 'COD' });
+    } else if (orderdata.paymentMode == "ONLINE") {
+      let amount = req.body.amount;
+      let instance = new Razorpay({ key_id: keyId, key_secret: secretkey });
+      let order = await instance.orders.create({
+        amount: amount * 100,
+        currency: "INR",
+        receipt: "receipt1",
       })
-      // console.log(products_img);
-      products_name = products_name.map((value)=>{
-        return value.productname;
+      res.status(201).json({
+        message: "ONLINE",
+        order,
+        amount,
       })
-      // console.log(products_name);
-      products_qty = products_qty.map((value)=>{
-        return value.quantity;
-      })
-      // console.log(products_qty);
-      products_subtotal = products_subtotal.map((value)=>{
-        return value.subtotal;
-      })
-      // console.log(products_subtotal);
-      
-      const orderdata = {
-        userid : req.session.user, 
-        orderid: ordernumber,
-        shippingAddress: req.body.shippingAddress,
-        itemsname: products_name,
-        itemsimage:products_img,
-        paymentMode: req.body.paymentMode,
-        status: "Confirmed",
-        expectedBy: expecteddate,
-        subtotal:products_subtotal,
-        quantity : products_qty
+    } else if (orderdata.paymentMode == "WALLET") {
+      let amount = req.body.amount;
+      try {
+        const user = req.session.user;
+        let userid = await usercollection.find({ name: user }, { _id: 1 });
+        userid = userid[0]._id;
+        let currentamt = await walletcollection.find({ userid: userid }, { balance: 1, _id: 0 });
+        currentamt = currentamt[0].balance;
+        if (amount <= currentamt) {
+        let newAmt = currentamt - amount;  
+        const method = "Debited";
+        await walletcollection.updateOne({ userid: userid }, { balance: newAmt }, { upsert: true });
+        await walletcollection.updateOne({ userid: userid }, { $push: { amountHistory: amount, date: currentdate, method: method } });
+        res.json({ message: 'WALLET' });
+        } else {
+          flag = false;
+          res.json({ message: 'InsufficientWallet' });
+        }
+      } catch (error) {
+        console.log("error in using wallet purchase");
+        console.log(error.message);
       }
-      console.log(orderdata);
-      if (orderdata.paymentMode == "COD") {
-        res.json({ message: 'COD' });
-      } else {
-        let amount = req.body.amount;
-        let instance = new Razorpay({key_id: keyId , key_secret : secretkey});
-        let order = await instance.orders.create({
-          amount: amount * 100,
-          currency: "INR",
-          receipt: "receipt1",
-        })
-        res.status(201).json({
-          message: "ONLINE",
-          order,
-          amount,
-        })
-      }
+      
+    }
+    if (flag == true) {
       await ordercollection.insertMany([orderdata])
-      await cartcollection.deleteMany({userid : req.session.user});
-      // const data = await cartcollection.find({userid : req.session.user});
-      // console.log(data);
-      
+    // Stock managing
+    try {
+      for (let i = 0; i < products_name.length; i++) {
+        const productName = products_name[i];
+        const productsQty = products_qty[i];
+        const data = await productCollection.find({ name: productName });
+        const currentqty = data[0].quantity;
+        const newQty = currentqty - productsQty;
+        await productCollection.updateOne({ name: productName }, { $set: { quantity: newQty } });
+      }
     } catch (error) {
-      console.log("Error in adding order db");
+      console.log("error in stock manage");
       console.log(error.message);
     }
+    await cartcollection.deleteMany({ userid: req.session.user });
+    }
+    
+  } catch (error) {
+    console.log("Error in adding order db");
+    console.log(error.message);
+  }
 }
 
-const confirmation =async (req,res)=>{
+const confirmation = async (req, res) => {
   try {
-    const order = await ordercollection.find({userid: req.session.user}); 
+    const order = await ordercollection.find({ userid: req.session.user });
     const lastElement = order.length - 1;
     const orderid = order[lastElement].orderid;
     // console.log(order);
     // console.log(orderid);
-    res.render('orderconfirmpage',{orderid : orderid});
+    res.render('orderconfirmpage', { orderid: orderid });
   } catch (error) {
     console.log(error.message);
     console.log("error in confirmation page");
   }
-  
+
 }
 
- const myorders = async (req,res) => {
+const myorders = async (req, res) => {
   const user = req.session.user;
   const logstatus = req.session.user ? "logout" : "login";
-   try {
+  try {
     const productdata = await productCollection.find();
-    const orderdata = await ordercollection.find({userid : user});
-    let userdata = await usercollection.find({name:user})
+    const orderdata = await ordercollection.find({ userid: user });
+    let userdata = await usercollection.find({ name: user })
     userdata = userdata[0];
     // console.log(orderdata);
-    res.render('myorders',{userdata,logstatus,orderdata,productdata});
-   } catch (error) {
+    res.render('myorders', { userdata, logstatus, orderdata, productdata });
+  } catch (error) {
     console.log("error in my orders");
     console.log(error.message);
-   }
- }
+  }
+}
 
- const cancelorder = async (req,res)=>{
+const cancelorder = async (req, res) => {
   // console.log("workeddd");
-    const orderid = req.body.id;
-    console.log(orderid);
+  const orderid = req.body.id;
+  console.log(orderid);
+  try {
+    await ordercollection.updateOne({ _id: orderid }, { $set: { status: "Cancelled" } });
+    const orderdata = await ordercollection.findById(orderid);
     try {
-      await ordercollection.updateOne({_id : orderid},{$set:{status:"Cancelled"}});
-      res.status(200).send('order cancelled');
+      console.log(orderdata);
+      for (let i = 0; i < orderdata.itemsname.length; i++) {
+        const product_name = orderdata.itemsname[i];
+        const product_data = await productCollection.find({ name: product_name });
+
+        const currentqty = product_data[0].quantity;
+        const newQty = currentqty + orderdata.quantity[i];
+        await productCollection.updateOne({ name: product_name }, { $set: { quantity: newQty } });
+      }
     } catch (error) {
-      console.log("error in cancelling order");
+      console.log("Error in restocking");
       console.log(error.message);
     }
- }
+    res.status(200).send('order cancelled');
+  } catch (error) {
+    console.log("error in cancelling order");
+    console.log(error.message);
+  }
+}
 
- const addwish = async(req,res)=>{
+const addwish = async (req, res) => {
   const productId = req.body.product_id;
   const user = req.session.user;
   try {
-    await wishlistcollection.updateOne({username: user},{ $push: { product_id: productId } },{upsert : true});
+    await wishlistcollection.updateOne({ username: user }, { $push: { product_id: productId } }, { upsert: true });
   } catch (error) {
     console.log("error in add to wishlist");
     console.log(error.message);
   }
- }
+}
 
- const wishlist = async(req,res)=>{
+const wishlist = async (req, res) => {
   const user = req.session.user;
   const logstatus = req.session.user ? "logout" : "login";
   try {
-    const wishlistdata = await wishlistcollection.find({username: user});
+    const wishlistdata = await wishlistcollection.find({ username: user });
     const product_id = wishlistdata[0].product_id;
 
-    let productdata = await productCollection.find({ _id: { $in: product_id } }) ;
+    let productdata = await productCollection.find({ _id: { $in: product_id } });
     console.log(productdata);
-    res.render('wishlist',{logstatus,wishlistdata : productdata});
+    res.render('wishlist', { logstatus, wishlistdata: productdata });
   } catch (error) {
     console.log("error in rendering wishlist");
     console.log(error.message);
   }
- }
+}
 
- const removeWishlist = async (req,res)=>{
+const removeWishlist = async (req, res) => {
   const productid = req.params.id;
-  const user = req.session.user; 
+  const user = req.session.user;
   try {
-    await wishlistcollection.updateOne({username : user},{$pull:{product_id : productid}})
+    await wishlistcollection.updateOne({ username: user }, { $pull: { product_id: productid } })
     res.redirect('back');
   } catch (error) {
     console.log("error in removing wishlist");
     console.log(error.message);
   }
- }
+}
 
- const applycoupon = async(req,res)=>{
+const applycoupon = async (req, res) => {
   const code = req.body.couponcode;
   let shippingfee = 40;
   try {
-    const coupondata = await couponCollection.find({code:code});
+    const coupondata = await couponCollection.find({ code: code });
     const discount = coupondata[0].discountValue;
-    await cartcollection.updateOne({userid : req.session.user},{$set:{discount: discount}})
+    await cartcollection.updateOne({ userid: req.session.user }, { $set: { discount: discount } })
     let sum_subtotal = await cartcollection.aggregate([{ $match: { userid: req.session.user } }, { $group: { _id: null, sum: { $sum: "$subtotal" } } }]);
     sum_subtotal = sum_subtotal[0].sum + shippingfee;
     const totalAmount = sum_subtotal - discount;
 
-    res.status(200).json({ value: discount ,amount : totalAmount});
+    res.status(200).json({ value: discount, amount: totalAmount });
   } catch (error) {
     res.status(200).json({ value: "null" });
     console.log('coupon apply failed');
     console.log(error.message);
   }
-     
- }
+
+}
+
+const wallet = async (req, res) => {
+  const user = req.session.user;
+  const logstatus = user ? "logout" : "login";
+  try {
+    let userdata = await usercollection.find({ name: user })
+    userdata = userdata[0];
+    // console.log(userdata);
+    const userid = userdata._id;
+    let wallethistory = await walletcollection.find({ userid: userid });
+    wallethistory = wallethistory[0];
+    // console.log(wallethistory);
+    res.render('mywallet', { logstatus, userdata, wallethistory });
+  } catch (error) {
+    console.log("error in mywallet");
+    console.log(error.message);
+  }
+}
+
+const addwallet = async (req, res) => {
+  try {
+    let amount = parseInt(req.body.amount);
+    const user = req.session.user;
+    let userid = await usercollection.find({ name: user }, { _id: 1 });
+    userid = userid[0]._id;
+    let newAmt = amount
+    try {
+      let currentamt = await walletcollection.find({ userid: userid }, { balance: 1, _id: 0 });
+      currentamt = currentamt[0].balance;
+      newAmt = currentamt + amount;
+    } catch (error) {
+      console.log("new user wallet");
+    }
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const nowDate = day + "/" + month + "/" + year;
+    const method = "Credited";
+    await walletcollection.updateOne({ userid: userid }, { balance: newAmt }, { upsert: true });
+    await walletcollection.updateOne({ userid: userid }, { $push: { amountHistory: amount, date: nowDate, method: method } });
+    let instance = new Razorpay({ key_id: keyId, key_secret: secretkey });
+    let order = await instance.orders.create({
+      amount: amount * 100,
+      currency: "INR",
+      receipt: "receipt1",
+    })
+    res.status(201).json({
+      order,
+      amount
+    })
+  } catch (error) {
+    console.log("error in adding wallet amt");
+    console.log(error.message);
+  }
+
+
+}
 
 
 const logout = (req, res) => {
@@ -834,5 +948,7 @@ module.exports = {
   addwish,
   wishlist,
   removeWishlist,
-  applycoupon
+  applycoupon,
+  wallet,
+  addwallet
 }

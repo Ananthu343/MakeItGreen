@@ -59,8 +59,8 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <% if(logstatus=="logout" ){ %>
-                                        <li><a class="dropdown-item" href="#">Orders</a></li>
-                                        <li><a class="dropdown-item" href="#">Wishlist </a></li>
+                                        <li><a class="dropdown-item" href="/profile">My profile</a></li>
+                                        <li><a class="dropdown-item" href="/wishlist">Wishlist </a></li>
                                         <% } %>
                                             <li><a class="dropdown-item" href="/<%=logstatus %>">
                                                     <%=logstatus %>
@@ -143,7 +143,7 @@
                                                     </div>
                                                     <div class="subhead-paymentselector">
                                                         <button onclick="place('ONLINE')">UPI / Others</button>
-                                                        <button>Wallet</button>
+                                                        <button onclick="place('WALLET')">Wallet</button>
                                                         <button onclick="place('COD')">Cash on delivery</button>
                                                     </div>
 
@@ -156,7 +156,7 @@
                                                     <div style="display: flex; flex-direction: column; ">
 
                                                         <button id="placebutton"></button>
-
+                                                        <p id="errormessage" style="color: red;"></p>
 
                                                     </div>
                                                 </div>
@@ -273,6 +273,7 @@
                     </script>
                     <script>
                         function place(paymode) {
+                            var errormessage = document.getElementById('errormessage');
                             var currentDate = new Date();
                             var day = currentDate.getDate();
                             var month = currentDate.getMonth() + 1;
@@ -285,6 +286,7 @@
                             date.innerHTML = ' Date: ' + formattedDate;
                             shippingAddress.innerHTML = 'Shipping to: ' + selectedOption;
                             placebutton.innerText = "Place order";
+                            errormessage.innerText = "";
 
                         }
                         document.getElementById('placebutton').addEventListener('click', () => {
@@ -318,15 +320,22 @@
                                             "name": "Make It Green",
                                             "order_id":  id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                                             "handler": function (response) {
+                                                window.location.href = '/profile/myorders';
                                                 alert(response.razorpay_payment_id);
                                                 alert(response.razorpay_order_id);
                                                 alert(response.razorpay_signature)
+                                                
                                             },
             
                                         };
                                         var rzp1 = new Razorpay(options);
                                         rzp1.open();
                                         
+                                    }else if(data.message == "WALLET"){
+                                        window.location.href = '/confirmation';
+                                    }else if (data.message == "InsufficientWallet") {
+                                        
+                                        errormessage.innerText = "Insufficient balance in wallet";
                                     }
 
                                 })

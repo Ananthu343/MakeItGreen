@@ -656,3 +656,33 @@ box-shadow: -2px 3px 10px 3px #dddddd;
   .wish-clicked {
     color: #f00; /* Color when clicked */
   }
+
+.wallet-container{
+    margin-left: 100px;
+    height: auto;
+    width: 900px;
+    display: flex;
+    color: white;
+    flex-direction: column;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+   
+    -webkit-box-shadow: -0.5px 3px 10px 3px #dddddd;
+-moz-box-shadow: -0.5px 3px 10px 3px #dddddd;
+box-shadow: -0.5px 3px 10px 3px #dddddd;
+}
+.inner-wallet-container{
+    background-color: rgb(42, 42, 110);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 500px;
+    height: 300px;
+    border-radius: 20px;
+    justify-content: space-evenly;
+}
+
