@@ -142,24 +142,27 @@
                                                         <h5>Select payment method</h5>
                                                     </div>
                                                     <div class="subhead-paymentselector">
-                                                        <button onclick="place('ONLINE')">UPI / Others</button>
-                                                        <button onclick="place('WALLET')">Wallet</button>
-                                                        <button onclick="place('COD')">Cash on delivery</button>
+                                                        <button  onclick="place('ONLINE')">UPI / Others</button>
+                                                        <button  onclick="place('WALLET')">Wallet</button>
+                                                        <button  onclick="place('COD')">Cash on delivery</button>
                                                     </div>
 
                                                 </div>
-                                                <div class="paymentdetail-container">
+                                                
+                                                <div  id="loadingDiv" style="display: none;" class="paymentdetail-container">
                                                     <div style="height: 200px; width: 500px;">
+                                                        <p id="mode"></p>
                                                         <h6 id="currentdate"></h6>
                                                         <p id="shippingAddress" style="font-size: larger; "></p>
                                                     </div>
                                                     <div style="display: flex; flex-direction: column; ">
 
-                                                        <button id="placebutton"></button>
+                                                        <button id="placebutton" class="orderplacebutton"></button>
                                                         <p id="errormessage" style="color: red;"></p>
 
                                                     </div>
                                                 </div>
+                                               
                                     </div>
                                 </div>
 
@@ -272,8 +275,12 @@
                         });
                     </script>
                     <script>
+                        const loadingDiv = document.getElementById("loadingDiv");
+                      
                         function place(paymode) {
+                            loadingDiv.style.display = "flex";
                             var errormessage = document.getElementById('errormessage');
+                            var mode = document.getElementById('mode');
                             var currentDate = new Date();
                             var day = currentDate.getDate();
                             var month = currentDate.getMonth() + 1;
@@ -283,6 +290,7 @@
                             var shippingAddress = document.getElementById('shippingAddress');
                             var placebutton = document.getElementById('placebutton');
                             paymentMode = paymode;
+                            mode.innerHTML = "Mode : " + paymode;
                             date.innerHTML = ' Date: ' + formattedDate;
                             shippingAddress.innerHTML = 'Shipping to: ' + selectedOption;
                             placebutton.innerText = "Place order";

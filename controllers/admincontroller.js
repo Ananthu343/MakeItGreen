@@ -3,7 +3,7 @@ const categorycollection = require('../models/categorydb');
 const productcollection = require('../models/productdb');
 const bannercollection = require('../models/bannerdb');
 const couponcollection = require('../models/coupondb');
-
+const offercollection = require('../models/offerdb');
 
 const path = require('path')
 
@@ -241,6 +241,20 @@ const add_product = async (req, res) => {
     console.log(product_data);
     try {
         await productcollection.insertMany([product_data]);
+        try {
+            let productid = await productcollection.find({name: product_data.name });
+            // console.log(productid);
+            productid = productid[0]._id;
+            
+            const offerpercent = req.body.offer;
+            const originalPrice = req.body.price;
+            const discountAmount = (originalPrice * offerpercent) / 100;
+            const offerPrice =  parseInt(originalPrice - discountAmount) ;
+            await offercollection.insertMany([{productid: productid,offerPercent: offerpercent, offerPrice: offerPrice}]);
+        } catch (error) {
+            console.log(error.message);
+            console.log("error in inserting offer");
+        }
         res.redirect('/admin/productmanagement');
     } catch (error) {
         console.log(error.message);
@@ -330,11 +344,18 @@ const update_product = async (req, res) => {
         category: req.body.category,
         images: newimagepath
     }
+    const offerpercent = req.body.offer;
+    const originalPrice = req.body.price;
+    const discountAmount = (originalPrice * offerpercent) / 100;
+    const offerPrice = parseInt(originalPrice - discountAmount) ;
+    
     try {
+        await offercollection.updateOne({productid: product_id},{$set:{offerPercent: offerpercent, offerPrice: offerPrice}},{ upsert: true });
         await productcollection.updateOne({ _id: product_id }, { $set: product_data }, { upsert: true })
         res.redirect('/admin/productmanagement');
     } catch (error) {
-
+        console.log("error in updating offer");
+        console.log(error.message);
     }
 }
 
@@ -473,7 +494,8 @@ const coupon_manage = async (req,res)=>{
 const add_coupon = async(req,res)=>{
     const coupondata = {
         code : req.body.couponcode,
-        discountValue : req.body.discountval
+        discountValue : req.body.discountval,
+        minPurchase : req.body.minimumpurchase
     }
     try {
         await couponcollection.insertMany([coupondata]);

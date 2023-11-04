@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Special offers</title>
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpeg">
+
+</head>
+
+<body style="background-image: none; overflow-x: hidden;">
+    <header class="header-home">
+        <nav class="navbar navbar-expand-lg navbar-light ">
+            <div class="container-fluid" style="display: flex; justify-content: space-between;">
+                <a href="/home" style="text-decoration: none;">
+                    <div class="logo-container">
+                        
+                            <img class="logo-img" src="/images/logo.jpeg" alt="">
+                            <h3>MAKE IT GREEN</h3>
+                    </div>
+                </a>
+                <div>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon "></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <form class="d-flex" style="margin-right: 80px;" action="/searchfromuser" method="post">
+                                <input id="productname" name="productname" class="form-control me-2" type="search"
+                                    placeholder="Search product" aria-label="Search" style="border-radius: 19px;">
+                                <button class="btn " type="submit"
+                                    style="background-color: #5A875E; border-radius: 74px; color: white;">Search</button>
+                            </form>
+                            <a class="nav-link active link-header" aria-current="page" href="/cart"
+                                style="margin-right: 20px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-cart3" viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                </svg>
+                                Cart</a>
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle link-header" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 20px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="16" fill="currentColor"
+                                        class="bi bi-person-circle " viewBox="0 0 16 16">
+                                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                        <path fill-rule="evenodd"
+                                            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                                    </svg>
+                                    My profile
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <% if(logstatus=="logout" ){ %>
+                                        <li><a class="dropdown-item" href="/profile">My profile</a></li>
+                                        <li><a class="dropdown-item" href="#">Wishlist </a></li>
+                                        <% } %>
+                                            <li><a class="dropdown-item" href="/<%=logstatus %>">
+                                                    <%=logstatus %>
+                                                </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="list-container container-fluid">
+        <div>
+            <a class="list" href="/wishlist">My Wishlist</a>
+            <a class="list" href="">Category</a>
+            <a class="list" href="/specialoffers">Special offers</a>
+        </div>
+    </div>
+    <div class="row">
+        <div style="height: fit-content; display: flex; justify-content: center; align-items: center; background: #76cf7a;
+        background: -webkit-linear-gradient(0deg, #76cf7a 0%, #292939 100%);
+        background: linear-gradient(0deg, #76cf7a 0%, #292939 100%); color: white;">
+            <p class="title1">Decor Your World With Live Plants</p>
+            <p class="title2">“we serve the true choice of live plants.”</p>
+        </div>
+    </div>
+    </div>
+    <div style="display: flex; justify-content: start; width: 100%; height: 80px; align-items: center; padding-left: 150px; ">
+        <h3 style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>
+                Special offers
+            </u>
+        </h3>
+    </div>
+    
+    <div class="product-container" >
+        <% fulldata.forEach((items)=>{ %>
+          <% if(items.offer != 0 ){ %>
+          <div class="card" style="width: 18rem;">
+            <div
+              style="width: auto; height: 250px; overflow: hidden; position: relative; display: flex; justify-content: end;">
+              <img src="<%= items.images[0] %>" class="card-img-top" alt="...">
+              <svg class="wish" onclick="wished('<%= items.id %>')"
+                style="position: absolute; margin-top:15px; margin-right: 15px;" xmlns="http://www.w3.org/2000/svg"
+                width="23" height="23" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+              </svg>
+            </div>
+            <a style="text-decoration: none; color: black;" href="/productpage/<%=items._id %>">
+              <div class="card-body" >
+                <h5 class="card-title">
+                  <%= items.name %>
+                </h5>
+    
+                <p class="card-text" style="color: green;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                    <path
+                      d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z" />
+                  </svg>
+                  <% const foundElement=offerdata.find(item=> item.productid.equals(items._id)); %>
+                      <% if(foundElement && (foundElement.offerPercent !=0 )){%>
+                        <%= foundElement.offerPrice %> <s style="color: red; font-size: small;"><svg xmlns="http://www.w3.org/2000/svg"
+                              width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                              <path
+                                d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4v1.06Z" />
+                            </svg>
+                            <%= items.price %>
+                          </s>
+                          &nbsp; <%= foundElement.offerPercent %> %OFF
+                          <%}else{ %>
+                            <%= items.price %>
+                              <% } %>
+                </p>
+    
+                <%if(items.quantity===0){ %>
+                    
+                        <p style="color: red; padding-top: 40px;">Outofstock</p>
+                  <% } else{ %>
+                    <p style="color: green;">instock</p>
+                    <div style="display: flex;justify-content: center;">
+                      <a href="/addcart/<%=items._id %>" class="addtocartbutton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                          class="bi bi-cart3" viewBox="0 0 16 16">
+                          <path
+                            d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                        </svg>
+                        add to cart</a>
+    
+    
+                    </div>
+    
+                    <% } %>
+    
+    
+              </div>
+            </a>
+          </div>
+        <% } %>
+          <% }) %>
+      </div>
+
+
+    <footer>
+        <div class="container bg-dark" style="height: auto;">
+            <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
+                <div class="col mb-3">
+                    <div class="logo-container">
+                        <img class="logo-img" src="/images/logo.jpeg" alt="">
+                        <h3>MAKE IT GREEN</h3>
+                    </div>
+                    <p class="text-muted">© 2022</p>
+                </div>
+
+                <div class="col mb-3">
+
+                </div>
+
+                <div class="col mb-3">
+                    <h5>Section</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="col mb-3">
+                    <h5>Section</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="col mb-3">
+                    <h5>Section</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+                    </ul>
+                </div>
+            </footer>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+   
+
+
+</body>
+
+</html>

@@ -284,13 +284,23 @@ overflow: hidden;
 
 }
 .card{
-    margin-top: 50px;
+    margin-top: 25px;
     margin-right: 20px;
     margin-bottom: 25px;
 }
 .card:hover{
-    scale: 1.1;
+    scale: 1.04;
     transition-duration: 0.5s;
+}
+.card-body{
+    background: 
+      linear-gradient(135deg,#0000 20.5%,#ffffff 0 29.5%,#0000 0) 0 5px,
+      linear-gradient( 45deg,#0000 8%,#ffffff 0 17%, #0000 0 58%) 10px 0,
+      linear-gradient(135deg,#0000 8%,#ffffff 0 17%, #0000 0 58%,#ffffff 0 67%,#0000 0),        
+      linear-gradient( 45deg,#0000 8%,#ffffff 0 17%, #0000 0 58%,#ffffff 0 67%,#0000 0 83%,#ffffff 0 92%,#0000 0),
+      #eeeeee;
+background-size: 20px 20px;
+
 }
 .addtocartbutton{
     text-decoration: none;
@@ -304,9 +314,7 @@ overflow: hidden;
     color: black;
 }
 .productdetail-container{
-     background: #76cf7a;
-    background: -webkit-linear-gradient(0deg, #76cf7a 0%, #292939 100%);
-    background: linear-gradient(0deg, #76cf7a 0%, #292939 100%);
+     background: #fcfcfc;
     width: 100vw;
     height: 700px;
     /* background: no-repeat; */
@@ -570,7 +578,7 @@ details[open].styled summary::before{
 }
 .paymentselector-container{
     width: 800px;
-    height: 550px;
+    height: auto;
     background-color: #D9D9D9;
     display: flex;
     flex-direction: column;
@@ -685,4 +693,20 @@ box-shadow: -0.5px 3px 10px 3px #dddddd;
     border-radius: 20px;
     justify-content: space-evenly;
 }
-
+.orderplacebutton{
+    height: 40px;
+    width: 100px;
+    background-color: blueviolet;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.orderplacebutton:hover{
+    -webkit-box-shadow: 0 3px 9px 3px #dddddd;
+-moz-box-shadow: 0 3px 9px 3px #dddddd;
+box-shadow: 0 3px 9px 3px #dddddd;
+    background-color: #12DB26;
+    animation-duration: 1s;
+}

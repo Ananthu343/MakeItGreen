@@ -10,6 +10,7 @@ const ordercollection = require('../models/orderdb');
 const bannercollection = require('../models/bannerdb');
 const wishlistcollection = require('../models/wishlistdb')
 const walletcollection = require('../models/walletdb');
+const offercollection = require('../models/offerdb');
 
 
 const { json } = require('express');
@@ -60,11 +61,13 @@ const loginPost = async (req, res) => {
 const home = async (req, res) => {
   const logstatus = req.session.user ? "logout" : "login";
   console.log("home get worked");
-  // console.log(req.session.user);
   try {
+    const offerdata = await offercollection.find()
+    const fulldata = await productCollection.find().sort({ offer: -1 }).limit(8);
+    // console.log(fulldata);
     const banner_data = await bannercollection.find();
     const cat_data = await categorycollection.find();
-    res.render('userhome', { cat_data, logstatus, bannerdata: banner_data });
+    res.render('userhome', { cat_data, logstatus, bannerdata: banner_data ,fulldata,offerdata});
   } catch (error) {
     console.log("error getting cat collection");
   }
@@ -285,10 +288,11 @@ const categoryPage = async (req, res) => {
   const logstatus = req.session.user ? "logout" : "login";
   console.log(req.params.id)
   try {
+    const offerdata = await offercollection.find();
     const category = await categorycollection.findById(req.params.id)
     const fulldata = await productCollection.find({ category: category.name });
-    // console.log(fulldata);
-    res.render('categorypage', { fulldata, logstatus });
+    // console.log(offerdata);
+    res.render('categorypage', { fulldata, logstatus, offerdata });
     // console.log(category);
   } catch (error) {
     console.log(error.message);
@@ -305,7 +309,7 @@ const product_page = async (req, res) => {
     const product_data = product_details[0];
     console.log(product_data);
     const image_data = product_data.images;
-    console.log(image_data);
+    // console.log(image_data);
     res.render('productpage', { product_data, image_data, logstatus });
   } catch (error) {
     console.log("error loading productpage");
@@ -615,7 +619,7 @@ const checkout = async (req, res) => {
 }
 
 const confirmorder = async (req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
   const min = 1000000;
   const max = 9999999;
   const ordernumber = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -844,16 +848,22 @@ const removeWishlist = async (req, res) => {
 
 const applycoupon = async (req, res) => {
   const code = req.body.couponcode;
+  const purcahseAmount = req.body.amount;
   let shippingfee = 40;
   try {
     const coupondata = await couponCollection.find({ code: code });
     const discount = coupondata[0].discountValue;
-    await cartcollection.updateOne({ userid: req.session.user }, { $set: { discount: discount } })
-    let sum_subtotal = await cartcollection.aggregate([{ $match: { userid: req.session.user } }, { $group: { _id: null, sum: { $sum: "$subtotal" } } }]);
-    sum_subtotal = sum_subtotal[0].sum + shippingfee;
-    const totalAmount = sum_subtotal - discount;
-
-    res.status(200).json({ value: discount, amount: totalAmount });
+    const minPurchase = coupondata[0].minPurchase;
+    if(purcahseAmount >= minPurchase){
+      await cartcollection.updateOne({ userid: req.session.user }, { $set: { discount: discount } })
+      let sum_subtotal = await cartcollection.aggregate([{ $match: { userid: req.session.user } }, { $group: { _id: null, sum: { $sum: "$subtotal" } } }]);
+      sum_subtotal = sum_subtotal[0].sum + shippingfee;
+      const totalAmount = sum_subtotal - discount;
+      res.status(200).json({ value: discount, amount: totalAmount });
+    }else{
+      res.status(200).json({ value: "minAmountRequired" });
+    }
+    
   } catch (error) {
     res.status(200).json({ value: "null" });
     console.log('coupon apply failed');
@@ -920,6 +930,18 @@ const addwallet = async (req, res) => {
 
 }
 
+ const specialoffers = async (req,res) =>{
+  const logstatus = req.session.user ? "logout" : "login";
+  try {
+    const offerdata = await offercollection.find()
+    const fulldata = await productCollection.find();
+    res.render('specialoffers', { logstatus,fulldata,offerdata});
+  } catch (error) {
+    console.log("error in special offers");
+    console.log(error.message);
+  }
+ }
+
 
 const logout = (req, res) => {
   console.log("logged out session destroyed");
@@ -967,5 +989,6 @@ module.exports = {
   removeWishlist,
   applycoupon,
   wallet,
-  addwallet
+  addwallet,
+  specialoffers
 }

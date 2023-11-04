@@ -185,7 +185,7 @@
                 <input type="text" placeholder="Apply coupon" id="couponcode">
                 <button type="submit" class="btn btn-success" onclick="coupon()">Apply</button>
             </div>
-            <p id="err"></p>
+            <p id="err" style="color: green; margin-top: 10px;"></p>
 
             <% if(totalAmount != "empty cart"){ %>
             <div style="display: flex; flex-direction: column; ">
@@ -309,13 +309,13 @@
         function coupon() {
             const couponcode = document.getElementById('couponcode').value;
             const err = document.getElementById("err");
-            
+            const amount = "<%= sum_subtotal %>";
             fetch('/applycoupon', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ couponcode })
+                    body: JSON.stringify({ couponcode,amount })
                 })
                 .then((response) => response.json())
                     .then(data => {
@@ -324,7 +324,9 @@
                         var totalamount = data.amount
                         if (discountval === "null") {
                             err.textContent = "Invalid coupon";
-                        } else {
+                        }else if(discountval === "minAmountRequired"){
+                            err.textContent = "Minimum purchase amount required!";
+                        }else {
                             console.log(totalamount);
                             totalAmount.textContent = `Total amount : ${totalamount} /-`;
                             err.textContent = "coupon applies!!! your saved Rs :"+ discountval ;
