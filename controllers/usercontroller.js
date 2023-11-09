@@ -290,11 +290,14 @@ const categoryPage = async (req, res) => {
   try {
     const offerdata = await offercollection.find();
     const category = await categorycollection.findById(req.params.id)
-    const fulldata = await productCollection.find({ category: category.name });
+    const fulldata = await productCollection.find({ category: category.id });
     // console.log(offerdata);
-    res.render('categorypage', { fulldata, logstatus, offerdata });
+    console.log(fulldata);
+    const cat_data = await categorycollection.find();
+    res.render('categorypage', { fulldata, logstatus, offerdata, cat_data });
     // console.log(category);
   } catch (error) {
+    console.log("error loading category page");
     console.log(error.message);
   }
 
@@ -309,8 +312,9 @@ const product_page = async (req, res) => {
     const product_data = product_details[0];
     console.log(product_data);
     const image_data = product_data.images;
+    const cat_data = await categorycollection.find();
     // console.log(image_data);
-    res.render('productpage', { product_data, image_data, logstatus });
+    res.render('productpage', { product_data, image_data, logstatus, cat_data });
   } catch (error) {
     console.log("error loading productpage");
     console.log(error.message);
@@ -323,8 +327,9 @@ const search_product = async (req, res) => {
   const product_name = req.body.productname;
   try {
     const fulldata = await productCollection.find({ name: product_name });
-    console.log(fulldata);
-    res.render('searchpage', { fulldata, logstatus });
+    // console.log(fulldata);
+    const cat_data = await categorycollection.find();
+    res.render('searchpage', { fulldata, logstatus ,cat_data});
 
 
 
@@ -335,6 +340,7 @@ const search_product = async (req, res) => {
 
 const cart = async (req, res) => {
   try {
+    const cat_data = await categorycollection.find();
     const logstatus = req.session.user ? "logout" : "login";
     const cartdata = await cartcollection.find({ userid: req.session.user });
     // console.log(cartdata);
@@ -344,13 +350,13 @@ const cart = async (req, res) => {
       const shippingFee = 40;
       const totalAmount = sum_subtotal + shippingFee;
       console.log(sum_subtotal);
-      res.render('cart', { logstatus, cartdata, sum_subtotal, shippingFee, totalAmount });
+      res.render('cart', { logstatus, cartdata, sum_subtotal, shippingFee, totalAmount,cat_data });
     } else {
       sum_subtotal = "empty cart";
       const shippingFee = "empty cart";
       const totalAmount = "empty cart";
       // console.log(sum_subtotal);
-      res.render('cart', { logstatus, cartdata, sum_subtotal, shippingFee, totalAmount });
+      res.render('cart', { logstatus, cartdata, sum_subtotal, shippingFee, totalAmount, cat_data });
     }
 
   } catch (error) {
@@ -363,30 +369,41 @@ const addcart = async (req, res) => {
 
   const product_id = req.params.id;
   let cartdata = await cartcollection.find({ productid: product_id, userid: req.session.user });
-
   try {
     if (cartdata[0]) {
-      const fixedPrice = cartdata[0].price;
+      let fixedPrice = cartdata[0].price;
+      const product_data = await productCollection.findById(product_id);
+      if (product_data.offer != 0 ) {
+        const offerdata = await offercollection.find({productid : product_id});
+        fixedPrice = offerdata[0].offerPrice;
+      }
       let currentqty = cartdata[0].quantity;
 
       currentqty++;
-      console.log(currentqty);
+      // console.log(currentqty);
       const Subtotal = cartdata[0].subtotal;
       const newSubtotal = Subtotal + fixedPrice;
-      console.log(Subtotal);
+      // console.log(Subtotal);
 
       await cartcollection.updateOne({ productid: product_id, userid: req.session.user }, { $set: { quantity: currentqty, subtotal: newSubtotal } })
       res.redirect('back');
     } else {
       const product_data = await productCollection.findById(product_id);
+      // console.log(product_data);
+      // console.log(product_data.offer);
+      let fixedPrice = product_data.price;
+      if (product_data.offer != 0 ) {
+        const offerdata = await offercollection.find({productid : product_id});
+        fixedPrice = offerdata[0].offerPrice;
+      }
       const cartitem = {
         userid: req.session.user,
         productid: product_id,
         productname: product_data.name,
         image_url: product_data.images[0],
         quantity: 1,
-        price: product_data.price,
-        subtotal: product_data.price
+        price: fixedPrice,
+        subtotal: fixedPrice
       }
       await cartcollection.insertMany([cartitem]);
       res.redirect('back');
@@ -401,8 +418,6 @@ const addcart = async (req, res) => {
 const removeproduct = async (req, res) => {
   const cartid = req.params.id;
   try {
-
-    const cart = await cartcollection.findById(cartid)
     await cartcollection.findByIdAndDelete(cartid);
     res.redirect('back');
   } catch (error) {
@@ -469,10 +484,11 @@ const profile = async (req, res) => {
   const logstatus = req.session.user ? "logout" : "login";
   console.log(username);
   try {
+    const cat_data = await categorycollection.find();
     let userdata = await usercollection.find({ name: username });
     // console.log(userdata);
     userdata = userdata[0];
-    res.render('userprofile', { logstatus, userdata });
+    res.render('userprofile', { logstatus, userdata, cat_data });
   } catch (error) {
     console.log("error log profile");
   }
@@ -483,13 +499,14 @@ const profileaddress = async (req, res) => {
   const logstatus = req.session.user ? "logout" : "login";
   console.log(req.session.user);
   try {
+    const cat_data = await categorycollection.find();
     let userdata = await usercollection.find({ name: req.session.user })
     const addressdata = await addresscollection.find({ username: req.session.user });
     userdata = userdata[0];
     // console.log(userdata);
-    res.render('profileaddress', { logstatus, userdata, addressdata })
+    res.render('profileaddress', { logstatus, userdata, addressdata, cat_data })
   } catch (error) {
-
+    console.log(error.message);
   }
 }
 
@@ -551,10 +568,11 @@ const usereditprofile = async (req, res) => {
   const logstatus = req.session.user ? "logout" : "login";
   // console.log("worked");
   try {
+    const cat_data = await categorycollection.find();
     let userdata = await usercollection.find({ name: req.session.user });
     userdata = userdata[0];
     console.log(userdata);
-    res.render('profileEdit', { userdata, logstatus })
+    res.render('profileEdit', { userdata, logstatus, cat_data })
   } catch (error) {
 
   }
@@ -592,7 +610,9 @@ const checkout = async (req, res) => {
   console.log('workkk');
   const logstatus = req.session.user ? "logout" : "login";
   const user = req.session.user;
+  
   try {
+    const cat_data = await categorycollection.find();
     const cartdata = await cartcollection.find({ userid: user });
     const discountval = cartdata[0].discount;
     let sum_subtotal = await cartcollection.aggregate([{ $match: { userid: user } }, { $group: { _id: null, sum: { $sum: "$subtotal" } } }]);
@@ -608,7 +628,7 @@ const checkout = async (req, res) => {
     let userdata = await usercollection.find({ name: req.session.user });
     userdata = userdata[0];
     const addressdata = await addresscollection.find({ username: user });
-    res.render('checkout', { logstatus, addressdata, userdata, totalQty, totalAmount, shippingFee, sum_subtotal, discountval });
+    res.render('checkout', { logstatus, addressdata, userdata, totalQty, totalAmount, shippingFee, sum_subtotal, discountval, cat_data });
 
 
   } catch (error) {
@@ -627,7 +647,21 @@ const confirmorder = async (req, res) => {
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
-  const newday = day + 5;
+  let newday = day + 5;
+  if (day ==26) {
+    newday = 1;
+  }else if (day==27) {
+    newday = 2;
+  }else if (day==28) {
+    newday = 3;
+  }else if (day==29) {
+    newday = 4;
+  }else if (day==30) {
+    newday = 5;
+  }else if (day==31) {
+    newday = 6;
+  }
+  
   const expecteddate = newday + "/" + month + "/" + year;
   const currentdate = day + "/" + month + "/" + year;
   let flag = true;
@@ -663,6 +697,7 @@ const confirmorder = async (req, res) => {
       paymentMode: req.body.paymentMode,
       status: "Confirmed",
       expectedBy: expecteddate,
+      created_at : currentdate,
       subtotal: products_subtotal,
       quantity: products_qty
     }
@@ -750,12 +785,13 @@ const myorders = async (req, res) => {
   const user = req.session.user;
   const logstatus = req.session.user ? "logout" : "login";
   try {
+    const cat_data = await categorycollection.find();
     const productdata = await productCollection.find();
     const orderdata = await ordercollection.find({ userid: user });
     let userdata = await usercollection.find({ name: user })
     userdata = userdata[0];
     // console.log(orderdata);
-    res.render('myorders', { userdata, logstatus, orderdata, productdata });
+    res.render('myorders', { userdata, logstatus, orderdata, productdata, cat_data });
   } catch (error) {
     console.log("error in my orders");
     console.log(error.message);
@@ -822,12 +858,13 @@ const wishlist = async (req, res) => {
   const user = req.session.user;
   const logstatus = req.session.user ? "logout" : "login";
   try {
+    const cat_data = await categorycollection.find();
     const wishlistdata = await wishlistcollection.find({ username: user });
     const product_id = wishlistdata[0].product_id;
 
     let productdata = await productCollection.find({ _id: { $in: product_id } });
     console.log(productdata);
-    res.render('wishlist', { logstatus, wishlistdata: productdata });
+    res.render('wishlist', { logstatus, wishlistdata: productdata, cat_data });
   } catch (error) {
     console.log("error in rendering wishlist");
     console.log(error.message);
@@ -876,6 +913,7 @@ const wallet = async (req, res) => {
   const user = req.session.user;
   const logstatus = user ? "logout" : "login";
   try {
+    const cat_data = await categorycollection.find();
     let userdata = await usercollection.find({ name: user })
     userdata = userdata[0];
     // console.log(userdata);
@@ -883,7 +921,7 @@ const wallet = async (req, res) => {
     let wallethistory = await walletcollection.find({ userid: userid });
     wallethistory = wallethistory[0];
     // console.log(wallethistory);
-    res.render('mywallet', { logstatus, userdata, wallethistory });
+    res.render('mywallet', { logstatus, userdata, wallethistory, cat_data });
   } catch (error) {
     console.log("error in mywallet");
     console.log(error.message);
@@ -933,9 +971,10 @@ const addwallet = async (req, res) => {
  const specialoffers = async (req,res) =>{
   const logstatus = req.session.user ? "logout" : "login";
   try {
+    const cat_data = await categorycollection.find();
     const offerdata = await offercollection.find()
     const fulldata = await productCollection.find();
-    res.render('specialoffers', { logstatus,fulldata,offerdata});
+    res.render('specialoffers', { logstatus,fulldata,offerdata,cat_data});
   } catch (error) {
     console.log("error in special offers");
     console.log(error.message);

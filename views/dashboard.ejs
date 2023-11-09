@@ -9,7 +9,7 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Admin-dashboard</title>
     <link rel="icon" type="image/x-icon" href="/images/logo.jpeg">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body style="background-image: none;">
@@ -33,7 +33,8 @@
 
                             <div class="dropdown">
                                 <button class="btn dropdown-toggle link-header" type="button" id="dropdownMenuButton1"
-                                    data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 20px; color: white;">
+                                    data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="margin-right: 20px; color: white;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="16" fill="currentColor"
                                         class="bi bi-person-circle " viewBox="0 0 16 16">
                                         <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
@@ -56,146 +57,253 @@
         <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600;">Dashboard</h3>
     </div>
 
-<div class="main-content-container">
-<!-- sidebar -->
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 20vw; height: auto;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi me-2" width="40" height="32">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-            <span class="fs-4">Management system</span>
-        </a>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item side-item">
-                <a href="/admin/dashboard" class="nav-link text-white" aria-current="page">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#home"></use>
-                    </svg>
-                    Dashboard
-                </a>
-            </li>
-            <li class="side-item">
-                <a href="/admin/usermanagement" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#speedometer2"></use>
-                    </svg>
-                    User management
-                </a>
-            </li>
-            <li class="side-item">
-                <a href="/admin/productmanagement" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#table"></use>
-                    </svg>
-                    Product management
-                </a>
-            </li>
-            <li class="side-item">
-                <a href="/admin/categorymanagement" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#grid"></use>
-                    </svg>
-                    Category management
-                </a>
-            </li>
-            <li class="side-item">
-                <a href="/admin/ordermanagement" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#people-circle"></use>
-                    </svg>
-                    Order management
-                </a>
-            </li>
-            <li class="side-item">
-                <a href="/admin/bannermanagement" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#people-circle"></use>
-                    </svg>
-                    Banner management
-                </a>
-            </li>
-            <li class="side-item">
-                <a href="/admin/couponmanagement" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16">
-                        <use xlink:href="#people-circle"></use>
-                    </svg>
-                    Coupon management
-                </a>
-            </li>
-        </ul>
-        <hr>
-    </div>
-  
-    <div class="main-content">
-        <div class="view-table">
-           <img src="/images/dark-path-in-the-forest-green-landscape-forest-background-free-photo.jpg" alt="">
-        </div>
-<hr>
-        <div class="view-table">
-            
-        </div>
-
-
-    </div>
-
-</div>
-
-<footer>
-    <div class="px-3 py-2 bg-dark text-white">
-        <div class="container">
-          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
-                <div class="logo-container">
-                    <img class="logo-img" src="/images/logo.jpeg" alt="">
-                    <h3>MAKE IT GREEN</h3>
-                </div>
+    <div class="main-content-container">
+        <!-- sidebar -->
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 20vw; height: auto;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+                <span class="fs-4">Management system</span>
             </a>
-    
-            <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
-              <li>
-                <a href="#" class="nav-link text-secondary">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"></use></svg>
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="#" class="nav-link text-secondary">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#speedometer2"></use></svg>
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <a href="#" class="nav-link text-secondary">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#table"></use></svg>
-                  Orders
-                </a>
-              </li>
-              <li>
-                <a href="#" class="nav-link text-secondary">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
-                  Products
-                </a>
-              </li>
-              <li>
-                <a href="#" class="nav-link text-secondary">
-                  <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#people-circle"></use></svg>
-                  Customers
-                </a>
-              </li>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item side-item">
+                    <a href="/admin/dashboard" class="nav-link text-white" aria-current="page">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#home"></use>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="side-item">
+                    <a href="/admin/usermanagement" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#speedometer2"></use>
+                        </svg>
+                        User management
+                    </a>
+                </li>
+                <li class="side-item">
+                    <a href="/admin/productmanagement" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#table"></use>
+                        </svg>
+                        Product management
+                    </a>
+                </li>
+                <li class="side-item">
+                    <a href="/admin/categorymanagement" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#grid"></use>
+                        </svg>
+                        Category management
+                    </a>
+                </li>
+                <li class="side-item">
+                    <a href="/admin/ordermanagement" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#people-circle"></use>
+                        </svg>
+                        Order management
+                    </a>
+                </li>
+                <li class="side-item">
+                    <a href="/admin/bannermanagement" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#people-circle"></use>
+                        </svg>
+                        Banner management
+                    </a>
+                </li>
+                <li class="side-item">
+                    <a href="/admin/couponmanagement" class="nav-link text-white">
+                        <svg class="bi me-2" width="16" height="16">
+                            <use xlink:href="#people-circle"></use>
+                        </svg>
+                        Coupon management
+                    </a>
+                </li>
             </ul>
-          </div>
+            <hr>
         </div>
-      </div>
-</footer>
 
-   
+        <div class="main-content">
+            <div class="view-table">
+                <div class="dashboard-chart-container">
+                    <h4>Sale chart</h4>
+                    <canvas id="myLineChart" width="400" height="200"></canvas>
+                </div>
+                <div class="dashboard-chart-container">
+                    <canvas id="myBarChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="px-3 py-2 bg-dark text-white">
+            <div class="container">
+                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                    <a href="/"
+                        class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+                        <div class="logo-container">
+                            <img class="logo-img" src="/images/logo.jpeg" alt="">
+                            <h3>MAKE IT GREEN</h3>
+                        </div>
+                    </a>
+
+                    <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                        <li>
+                            <a href="#" class="nav-link text-secondary">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24">
+                                    <use xlink:href="#home"></use>
+                                </svg>
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link text-secondary">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24">
+                                    <use xlink:href="#speedometer2"></use>
+                                </svg>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link text-secondary">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24">
+                                    <use xlink:href="#table"></use>
+                                </svg>
+                                Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link text-secondary">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24">
+                                    <use xlink:href="#grid"></use>
+                                </svg>
+                                Products
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link text-secondary">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24">
+                                    <use xlink:href="#people-circle"></use>
+                                </svg>
+                                Customers
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous">
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
+<div id="days" data-array="<%= JSON.stringify(days) %>"></div>
+<div id="daysQty" data-array="<%= JSON.stringify(sumQuantitiesPerDay) %>"></div>
+<div id="months" data-array="<%= JSON.stringify(uniqueMonths) %>"></div>
+<div id="monthQty" data-array="<%= JSON.stringify(sumQuantitiesPerMonth) %>"></div>
 
- 
+
+<script>
+    var days = JSON.parse(document.getElementById('days').getAttribute('data-array'));
+    var sumQuantitiesPerDay = JSON.parse(document.getElementById('daysQty').getAttribute('data-array'));
+    var months = JSON.parse(document.getElementById('months').getAttribute('data-array'));
+    var sumQuantitiesPerMonth = JSON.parse(document.getElementById('monthQty').getAttribute('data-array'));
+
+    var monthNames = [];
+    for (let i = 0; i < months.length; i++) {
+        if (months[i] == 1) {
+            monthNames[i] = "Jan";
+        } else if (months[i] == 2) {
+            monthNames[i] = "Feb";
+        }else if (months[i] == 3) {
+            monthNames[i] = "Mar";
+        }else if (months[i] == 4) {
+            monthNames[i] = "Apr";
+        }else if (months[i] == 5) {
+            monthNames[i] = "May";
+        }else if (months[i] == 6) {
+            monthNames[i] = "Jun";
+        }else if (months[i] == 7) {
+            monthNames[i] = "Jul";
+        }else if (months[i] == 8) {
+            monthNames[i] = "Aug";
+        }else if (months[i] == 9) {
+            monthNames[i] = "Sep";
+        }else if (months[i] == 10) {
+            monthNames[i] = "Oct";
+        }else if (months[i] == 11) {
+            monthNames[i] = "Nov";
+        }else if (months[i] == 12) {
+            monthNames[i] = "Dec";
+        }           
+    }
+
+        
+
+
+        const linectx = document.getElementById('myLineChart').getContext('2d');
+
+        const linechartData = {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [{
+                    label: 'Sales on every days',
+                    data: sumQuantitiesPerDay,
+                    fill: false, // To create a line chart without filling the area under the line
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        const myLineChart = new Chart(linectx, linechartData);
+
+
+        const barctx = document.getElementById('myBarChart').getContext('2d');
+
+const barchartData = {
+  type: 'bar',
+  data: {
+    labels: monthNames,
+    datasets: [{
+      label: 'Sales on months',
+      data: sumQuantitiesPerMonth,
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+};
+
+const myBarChart = new Chart(barctx, barchartData);
+</script>
+
+        
+        
+
+    </script>
 
 </body>
 

@@ -34,6 +34,10 @@ const orderSchema = new mongoose.Schema({
         type:String,
         required:false
     },
+    created_at:{
+        type:String,
+        required:true
+    },
     subtotal: [{
         type: Number,
         required:true

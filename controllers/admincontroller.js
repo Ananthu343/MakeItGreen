@@ -41,8 +41,104 @@ const adloginpost = (req, res) => {
 }
 
 const dashboard = async (req, res) => {
-    res.render('dashboard');
+    try {
+        const orderdata = await ordercollection.find();
 
+        const dates = orderdata.map((element) => {
+
+            return element.expectedBy;
+
+        });
+
+        let days = dates.map((element) => {
+            const dateString = element;
+
+            // Split the date string by "/"
+            const dateParts = dateString.split("/");
+
+            // Extract day, month, and year
+            let day = parseInt(dateParts[0], 10);
+            day = day - 5;
+            if (day == 0) {
+                day = 30;
+            } else if (day == -1) {
+                day = 29;
+            } else if (day == -2) {
+                day = 28;
+            } else if (day == -3) {
+                day = 27;
+            } else if (day == -4) {
+                day = 26;
+            } else if (day == -5) {
+                day = 25;
+            }
+            return day;
+
+        })
+        let months = dates.map((element) => {
+
+            const dateString = element;
+
+            // Split the date string by "/"
+            const dateParts = dateString.split("/");
+
+            // Extract day, month, and year
+            const month = parseInt(dateParts[1], 10);
+            return month;
+
+        })
+
+
+        let quantities = orderdata.map((element) => {
+            if (element.status == "Delivered") {
+                const sum = element.quantity.reduce((acc, val) => {
+                    return acc + val;
+                }, 0);
+                return sum;
+            } else {
+                return 0;
+            }
+
+        })
+
+
+        const result = days.reduce((accumulator, day, index) => {
+            if (!accumulator.uniqueDays.includes(day)) {
+                accumulator.uniqueDays.push(day);
+                accumulator.sumQuantities.push(0);
+            }
+            const dayIndex = accumulator.uniqueDays.indexOf(day);
+            accumulator.sumQuantities[dayIndex] += quantities[index];
+            return accumulator;
+        }, { uniqueDays: [], sumQuantities: [] });
+
+        days = result.uniqueDays;
+        sumQuantitiesPerDay = result.sumQuantities;
+
+
+        const uniqueMonths = [];
+        const sumQuantitiesPerMonth = [];
+
+        months.forEach((month, index) => {
+            if (!uniqueMonths.includes(month)) {
+                uniqueMonths.push(month);
+                sumQuantitiesPerMonth.push(0);
+            }
+            const monthIndex = uniqueMonths.indexOf(month);
+            sumQuantitiesPerMonth[monthIndex] += quantities[index];
+        });
+        // console.log(months);
+        console.log(quantities);
+        console.log(uniqueMonths);
+        // console.log(days);
+        // console.log(quantities);
+        console.log(sumQuantitiesPerMonth);
+
+        res.render('dashboard', { sumQuantitiesPerDay, days, uniqueMonths, sumQuantitiesPerMonth });
+    } catch (error) {
+        console.log("error in dashboard");
+        console.log(error.message);
+    }
 };
 
 const user_manage = async (req, res) => {
@@ -196,10 +292,10 @@ const add_category = async (req, res) => {
 const product_manage = async (req, res) => {
     try {
         const fulldata = await productcollection.find();
-        const cate_names = await categorycollection.distinct('name');
-        console.log(cate_names);
+        const catedata = await categorycollection.find();
+        console.log(catedata);
         // res.render('productmanagement');
-        res.render('productmanagement', { fulldata, product_data: "", cate_names });
+        res.render('productmanagement', { fulldata, product_data: "", catedata });
     } catch (error) {
         console.log("error loading product data");
     }
@@ -235,22 +331,22 @@ const add_product = async (req, res) => {
         quantity: req.body.quantity,
         offer: req.body.offer,
         description: req.body.description,
-        category: req.body.category,
+        category: req.body.categoryid,
         images: newimagepath
     }
     console.log(product_data);
     try {
         await productcollection.insertMany([product_data]);
         try {
-            let productid = await productcollection.find({name: product_data.name });
+            let productid = await productcollection.find({ name: product_data.name });
             // console.log(productid);
             productid = productid[0]._id;
-            
+
             const offerpercent = req.body.offer;
             const originalPrice = req.body.price;
             const discountAmount = (originalPrice * offerpercent) / 100;
-            const offerPrice =  parseInt(originalPrice - discountAmount) ;
-            await offercollection.insertMany([{productid: productid,offerPercent: offerpercent, offerPrice: offerPrice}]);
+            const offerPrice = parseInt(originalPrice - discountAmount);
+            await offercollection.insertMany([{ productid: productid, offerPercent: offerpercent, offerPrice: offerPrice }]);
         } catch (error) {
             console.log(error.message);
             console.log("error in inserting offer");
@@ -294,9 +390,9 @@ const edit_product = async (req, res) => {
     const product_id = req.params.id;
     let data = await productcollection.find({ _id: product_id });
     data = data[0];
-    const cate_names = await categorycollection.distinct('name');
+    const catedata = await categorycollection.find();
     //  console.log(data);
-    res.render('product_edit', { data, cate_names });
+    res.render('product_edit', { data, catedata });
 }
 
 const delete_image = async (req, res) => {
@@ -341,17 +437,17 @@ const update_product = async (req, res) => {
         quantity: req.body.quantity,
         offer: req.body.offer,
         description: req.body.description,
-        category: req.body.category,
-        images: newimagepath
+        category: req.body.categoryid,
     }
     const offerpercent = req.body.offer;
     const originalPrice = req.body.price;
     const discountAmount = (originalPrice * offerpercent) / 100;
-    const offerPrice = parseInt(originalPrice - discountAmount) ;
-    
+    const offerPrice = parseInt(originalPrice - discountAmount);
+
     try {
-        await offercollection.updateOne({productid: product_id},{$set:{offerPercent: offerpercent, offerPrice: offerPrice}},{ upsert: true });
+        await offercollection.updateOne({ productid: product_id }, { $set: { offerPercent: offerpercent, offerPrice: offerPrice } }, { upsert: true });
         await productcollection.updateOne({ _id: product_id }, { $set: product_data }, { upsert: true })
+        await productcollection.updateOne({ _id: product_id }, { $push: {images : newimagepath} })
         res.redirect('/admin/productmanagement');
     } catch (error) {
         console.log("error in updating offer");
@@ -412,14 +508,14 @@ const pendingorder = async (req, res) => {
 const banner_manage = async (req, res) => {
     try {
         const bannerdata = await bannercollection.find();
-        res.render('bannermanagement', { fulldata : bannerdata });
+        res.render('bannermanagement', { fulldata: bannerdata });
     } catch (error) {
         console.log("error in banner manage");
         console.log(error.message);
     }
 }
 
-const add_banner = async (req,res)=>{
+const add_banner = async (req, res) => {
     try {
         console.log("worked");
         let imagePath = req.files[0].path;
@@ -436,7 +532,7 @@ const add_banner = async (req,res)=>{
         // console.log(image);
         const banner_data = {
             name: req.body.bannername,
-            description : req.body.description,
+            description: req.body.description,
             image_url: imagePath
         }
         console.log(banner_data);
@@ -452,10 +548,63 @@ const add_banner = async (req,res)=>{
         console.log("error in banner");
         console.log(error.message);
     }
-} 
+}
+
+const edit_banner = async(req,res)=>{
+    const banner_id = req.params.id;
+    let data = await bannercollection.findById(banner_id);
+    console.log(data);
+    res.render('banner_edit',{data});
+}
+
+const update_banner = async (req,res)=>{
+    const banner_id = req.params.id;
+    console.log(req.body);
+    let imagePath = req.files[0].path;
+        console.log(imagePath);
+        // Check if the path includes "public/" (Windows uses backslashes)
+        if (imagePath.includes('public\\')) {
+            // Remove the "public/" prefix for Windows
+            imagePath = imagePath.replace('public\\', '');
+        } else if (imagePath.includes('public/')) {
+            // Remove the "public/" prefix for Unix-like systems
+            imagePath = imagePath.replace('public/', '');
+        }
+
+    console.log(imagePath);
+    const banner_data = {
+        name: req.body.bannername,        
+        description: req.body.description,
+        image_url: imagePath
+    }
+
+    try {
+        await bannercollection.updateOne({_id:banner_id},{$set:banner_data});
+        res.redirect('/admin/bannermanagement');
+    } catch (error) {
+        console.log("error in updating banner");
+        console.log(error.message);
+    }
+}
+
+const delete_bannerimg = async (req,res)=>{
+    console.log(req.params);
+    const banner_id = req.params.id;
+    const index = req.params.index;
+    try {
+        const bannerdata = await bannercollection.findById(banner_id);
+        let images = bannerdata.image_url;
+        images.splice(index, 1);
+        await bannercollection.updateOne({ _id: banner_id }, { $set: { image_url: images } });
+        res.redirect(`/editbanner/${banner_id}`);
+    } catch (error) {
+        console.log(error.message);
+        console.log("error updating img");
+    }
+}
 
 
-const delete_banner = async (req,res)=>{
+const delete_banner = async (req, res) => {
     const banner_id = req.params.id;
     // console.log(banner_id);
     try {
@@ -481,21 +630,21 @@ const delete_banner = async (req,res)=>{
     }
 }
 
-const coupon_manage = async (req,res)=>{
+const coupon_manage = async (req, res) => {
     try {
         const fulldata = await couponcollection.find();
-        res.render('couponmanagement',{fulldata});
+        res.render('couponmanagement', { fulldata });
     } catch (error) {
         console.log("error in coupon manage");
         console.log(error.message);
     }
 }
 
-const add_coupon = async(req,res)=>{
+const add_coupon = async (req, res) => {
     const coupondata = {
-        code : req.body.couponcode,
-        discountValue : req.body.discountval,
-        minPurchase : req.body.minimumpurchase
+        code: req.body.couponcode,
+        discountValue: req.body.discountval,
+        minPurchase: req.body.minimumpurchase
     }
     try {
         await couponcollection.insertMany([coupondata]);
@@ -506,8 +655,8 @@ const add_coupon = async(req,res)=>{
     }
 }
 
-const delete_coupon = async(req,res)=>{
-    const couponId = req.params.id; 
+const delete_coupon = async (req, res) => {
+    const couponId = req.params.id;
     try {
         await couponcollection.findByIdAndDelete(couponId);
         res.redirect('/admin/couponmanagement');
@@ -552,6 +701,9 @@ module.exports = {
     pendingorder,
     banner_manage,
     add_banner,
+    edit_banner,
+    update_banner,
+    delete_bannerimg,
     delete_banner,
     coupon_manage,
     add_coupon,

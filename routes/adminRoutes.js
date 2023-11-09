@@ -35,10 +35,13 @@ router.post('/deliveredorder',authenticate,admincontroller.deliveredorder);
 router.post('/pendingorder',authenticate,admincontroller.pendingorder);
 router.get('/admin/bannermanagement',authenticate,admincontroller.banner_manage);
 router.post('/addbanner',authenticate,admincontroller.add_banner);
+router.get('/editbanner/:id',authenticate,admincontroller.edit_banner);
+router.post('/editbanner/:id',authenticate,admincontroller.update_banner);
+router.get('/delete_bannerimg/:index/:id',authenticate,admincontroller.delete_bannerimg)
 router.get('/deletebanner/:id',authenticate,admincontroller.delete_banner);
 router.get('/admin/couponmanagement',authenticate,admincontroller.coupon_manage);
-router.post('/addcoupon',authenticate,admincontroller.add_coupon)
-router.get('/deletecoupon/:id',authenticate,admincontroller.delete_coupon)
+router.post('/addcoupon',authenticate,admincontroller.add_coupon);
+router.get('/deletecoupon/:id',authenticate,admincontroller.delete_coupon);
 
 
 module.exports= router;

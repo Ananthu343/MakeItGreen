@@ -69,12 +69,22 @@
   </header>
 
   <div class="list-container container-fluid">
-     <div>
+    <div>
       <a class="list" href="/wishlist">My Wishlist</a>
-      <a class="list" href="">Category</a>
+      <div class="dropdown">
+        <a class="list dropdown-toggle " role="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" >
+          Category 
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <% cat_data.forEach((items,index)=>{ %>
+              <li><a class="dropdown-item" href="/category/<%= items._id %>"><%= items.name  %></a></li>
+            <%}) %>
+        </ul>
+      </div>
       <a class="list" href="/specialoffers">Special offers</a>
-     </div>
+    </div>
   </div>
+  
   
   
   <div class="productdetail-container container-fluid" >
@@ -100,17 +110,19 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex align-items-center"> <i class="fa fa-long-arrow-left"></i> <a style="text-decoration: none; color: green;" href="/home"><span class="ml-1">Continue shopping-> </span> </a></div> <i class="fa fa-shopping-cart text-muted"></i>
                                     </div>
-                                    <div class="mt-4 mb-3"> <span class="text-uppercase text-muted brand"><%= product_data.category %></span>
+                                    <div class="mt-4 mb-3"> <span class="text-uppercase text-muted brand"><% category = cat_data.find(obj => obj._id.equals( product_data.category))  %><%= category.name %></span>
                                         <h5 class="text-uppercase"><%= product_data.name %></h5>
                                         <div class="price d-flex flex-row align-items-center"> 
                                           <span class="act-price">$<%= product_data.price %></span>
+                                          <% if(product_data.offer != 0){ %>
                                             <div class="ml-2"> <small class="dis-price">$<%= product_data.price %></small> <span><%= product_data.offer %>% OFF</span> </div>
+                                            <% } %>
                                         </div>
                                     </div>
                                     <p class="about"><%= product_data.description %></p>
                                     
                                     <div class="cart mt-4 align-items-center"> 
-                                        <button class="btn btn-danger text-uppercase mr-2 px-4">Add to cart</button>
+                                        <button onclick="addcart('<%= product_data.id %>')" class="btn btn-danger text-uppercase mr-2 px-4">Add to cart</button>
                                         <button class="btn btn-primary text-uppercase mr-2 px-4">Buy now</button>
                                     </div>
                                 </div>
@@ -200,12 +212,22 @@ container.src = image.src;
 document.addEventListener("DOMContentLoaded", function(event) {
 
 
-
-
-
-
-
 });
+
+
+function addcart(product_id) {
+  fetch('/addcart/<%= product_data.id %>', {
+                    
+                })
+                .then((response) => response.json())
+                    .then(data => {
+                        
+                    })
+
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+}
 </script>
 
 </body>

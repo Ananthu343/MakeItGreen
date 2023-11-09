@@ -76,11 +76,21 @@
 
     <div class="list-container container-fluid">
         <div>
-            <a class="list" href="/wishlist">My Wishlist</a>
-            <a class="list" href="">Category</a>
-            <a class="list" href="/specialoffers">Special offers</a>
+          <a class="list" href="/wishlist">My Wishlist</a>
+          <div class="dropdown">
+            <a class="list dropdown-toggle " role="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" >
+              Category 
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <% cat_data.forEach((items,index)=>{ %>
+                  <li><a class="dropdown-item" href="/category/<%= items._id %>"><%= items.name  %></a></li>
+                <%}) %>
+            </ul>
+          </div>
+          <a class="list" href="/specialoffers">Special offers</a>
         </div>
-    </div>
+      </div>
+      
     
     </div>
 

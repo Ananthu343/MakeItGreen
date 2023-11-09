@@ -150,14 +150,14 @@
                                 <input type="text" id="quantity" name="quantity" value="<%= data.quantity %>">
                             </div>
                             <div>
-                                <label for="offer">Offer:</label>
+                                <label for="offer">Offer: (0 for no offer)</label>
                                 <input type="text" id="offer" name="offer" value="<%= data.offer %>">
                             </div>
                             <div class="col-md">
-                                <label for="category">Select  category:</label>
-                                <select id="category" name="category">
-                                    <% cate_names.forEach((item)=>{ %>
-                                          <option value="<%= item %>"><%= item %></option>
+                                <label for="categoryid">Select  category:</label>
+                                <select id="categoryid" name="categoryid">
+                                    <% catedata.forEach((item)=>{ %>
+                                          <option value="<%= item._id %>"><%= item.name %></option>
                                     <% }) %>
                                 </select>
                             </div>
