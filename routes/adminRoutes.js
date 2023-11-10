@@ -1,7 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
-const admincontroller = require('../controllers/admincontroller');
+const adminController = require('../controllers/adminControllers/adminController');
+const bannerController = require('../controllers/adminControllers/bannerController');
+const categoryController = require('../controllers/adminControllers/categoryController');
+const couponController = require('../controllers/adminControllers/couponController');
+const orderController = require('../controllers/adminControllers/orderController');
+const productController = require('../controllers/adminControllers/productController');
+const userManage = require('../controllers/adminControllers/userManage');
+
 
 function authenticate(req, res, next) {
     console.log("authenticating");
@@ -11,37 +18,37 @@ function authenticate(req, res, next) {
     next();
 }
 
-router.get('/adminlogin',admincontroller.adlogin);
-router.post('/admin',admincontroller.adloginpost);
-router.get('/adlogout',admincontroller.adlogout);
-router.get('/admin/dashboard',authenticate,admincontroller.dashboard);
-router.get('/admin/usermanagement',authenticate,authenticate,admincontroller.user_manage);
-router.get('/block/:id',authenticate,admincontroller.block);
-router.get('/unblock/:id',authenticate,admincontroller.unblock);
-router.post('/search',authenticate,admincontroller.search_user);
-router.get('/admin/categorymanagement',authenticate,admincontroller.category_manage);
-router.get('/deletecategory/:id',authenticate,admincontroller.delete_category);
-router.post('/addcategory',authenticate,admincontroller.add_category);
-router.get('/admin/productmanagement',authenticate,admincontroller.product_manage);
-router.post('/addproduct',authenticate,admincontroller.add_product)
-router.post('/search/product',authenticate,admincontroller.search_product);
-router.get('/deleteproduct/:id',authenticate,admincontroller.delete_product);
-router.get('/editproduct/:id',authenticate,admincontroller.edit_product);
-router.get('/deleteimage/:index/:id',authenticate,admincontroller.delete_image);
-router.post('/editproduct/:id',authenticate,admincontroller.update_product);
-router.get('/admin/ordermanagement',authenticate,admincontroller.order_manage);
-router.post('/confirmuserorder',authenticate,admincontroller.confirmorder);
-router.post('/deliveredorder',authenticate,admincontroller.deliveredorder);
-router.post('/pendingorder',authenticate,admincontroller.pendingorder);
-router.get('/admin/bannermanagement',authenticate,admincontroller.banner_manage);
-router.post('/addbanner',authenticate,admincontroller.add_banner);
-router.get('/editbanner/:id',authenticate,admincontroller.edit_banner);
-router.post('/editbanner/:id',authenticate,admincontroller.update_banner);
-router.get('/delete_bannerimg/:index/:id',authenticate,admincontroller.delete_bannerimg)
-router.get('/deletebanner/:id',authenticate,admincontroller.delete_banner);
-router.get('/admin/couponmanagement',authenticate,admincontroller.coupon_manage);
-router.post('/addcoupon',authenticate,admincontroller.add_coupon);
-router.get('/deletecoupon/:id',authenticate,admincontroller.delete_coupon);
+router.get('/adminlogin',adminController.adlogin);
+router.post('/admin',adminController.adloginpost);
+router.get('/adlogout',adminController.adlogout);
+router.get('/admin/dashboard',authenticate,adminController.dashboard);
+router.get('/admin/usermanagement',authenticate,userManage.user_manage);
+router.get('/block/:id',authenticate,userManage.block);
+router.get('/unblock/:id',authenticate,userManage.unblock);
+router.post('/search',authenticate,userManage.search_user);
+router.get('/admin/categorymanagement',authenticate,categoryController.category_manage);
+router.get('/deletecategory/:id',authenticate,categoryController.delete_category);
+router.post('/addcategory',authenticate,categoryController.add_category);
+router.get('/admin/productmanagement',authenticate,productController.product_manage);
+router.post('/addproduct',authenticate,productController.add_product)
+router.post('/search/product',authenticate,productController.search_product);
+router.get('/deleteproduct/:id',authenticate,productController.delete_product);
+router.get('/editproduct/:id',authenticate,productController.edit_product);
+router.get('/deleteimage/:index/:id',authenticate,productController.delete_image);
+router.post('/editproduct/:id',authenticate,productController.update_product);
+router.get('/admin/ordermanagement',authenticate,orderController.order_manage);
+router.post('/confirmuserorder',authenticate,orderController.confirmorder);
+router.post('/deliveredorder',authenticate,orderController.deliveredorder);
+router.post('/pendingorder',authenticate,orderController.pendingorder);
+router.get('/admin/bannermanagement',authenticate,bannerController.banner_manage);
+router.post('/addbanner',authenticate,bannerController.add_banner);
+router.get('/editbanner/:id',authenticate,bannerController.edit_banner);
+router.post('/editbanner/:id',authenticate,bannerController.update_banner);
+router.get('/delete_bannerimg/:index/:id',authenticate,bannerController.delete_bannerimg)
+router.get('/deletebanner/:id',authenticate,bannerController.delete_banner);
+router.get('/admin/couponmanagement',authenticate,couponController.coupon_manage);
+router.post('/addcoupon',authenticate,couponController.add_coupon);
+router.get('/deletecoupon/:id',authenticate,couponController.delete_coupon);
 
 
 module.exports= router;

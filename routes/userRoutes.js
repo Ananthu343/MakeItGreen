@@ -1,94 +1,57 @@
 var express = require('express');
-const usercollection = require('../models/userdb');
-const cartcollection = require('../models/cartdb');
-
 var router = express.Router();
 
-const usercontroller = require('../controllers/usercontroller');
-
-async function isitblocked(req,res,next) {
-    try {
-        // console.log(req.body);
-        const data = await usercollection.findOne({name:req.body.name});
-        if (data.block_status == "blocked") {
-            console.log("blocked aanu");
-            res.render('userlogin',{message:"Account blocked by admin!"});
-        }else {
-            next();
-        }
-        
-    } catch (error) {
-        console.log("error checking blocked");
-        // next()
-    }
-}
-
-async function cartempty(req,res,next) {
-    try {
-        const data = await cartcollection.findOne({userid : req.session.user});
-        if (data) {
-            next();
-        }else {
-            res.redirect('/cart');
-        }
-        
-    } catch (error) {
-        console.log("error checking cartempty");
-        res.redirect('/cart');
-    }
-}
+const middleware = require('../middlewares/middlewares'); 
+const userController = require('../controllers/userControllers/userController');
+const cartController = require('../controllers/userControllers/cartController');
+const checkoutController = require('../controllers/userControllers/checkoutController');
+const couponController = require('../controllers/userControllers/couponController');
+const otpController = require('../controllers/userControllers/otpController');
+const profileController = require('../controllers/userControllers/profileController');
+const wishlistController = require('../controllers/userControllers/wishlistController');
 
 
-function authenticate(req, res, next) {
-    console.log("authenticating");
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    next();
-}
-
-router.get('/login',usercontroller.login);
-router.post('/login',isitblocked,usercontroller.loginPost);
-router.get('/signup',usercontroller.signup);
-router.post('/signup',usercontroller.signupPost);
-router.get('/home',usercontroller.home);
-router.get('/forgotpass',usercontroller.forgotpass);
-router.post('/sendotp',usercontroller.forgotpasspost);
-router.get('/resendotp/:email',usercontroller.resend);
-router.get('/otpexpired/:email',usercontroller.otpexpired);
-router.post('/confirmotp/:email',usercontroller.confirmotp);
-router.post('/changepass/:email',usercontroller.changepass);
-router.get('/category/:id',usercontroller.categoryPage);
-router.get('/productpage/:id',usercontroller.product_page);
-router.post('/searchfromuser',usercontroller.search_product);
-router.get('/cart',authenticate,usercontroller.cart);
-router.get('/addcart/:id',authenticate,usercontroller.addcart);
-router.get('/removecart/:id',usercontroller.removeproduct);
-router.post('/addqty',usercontroller.addQty);
-router.post('/subqty',usercontroller.subQty);
-router.get('/clearcart',usercontroller.clearCart)
-router.get('/profile',authenticate,usercontroller.profile)
-router.get('/profile/address',authenticate,usercontroller.profileaddress);
-router.post('/addAddress',usercontroller.addAddress)
-router.post('/updatedefaultaddress',usercontroller.updatedefaultaddress);
-router.get('/deleteaddress/:id',usercontroller.deleteAddress);
-router.get('/usereditprofile',authenticate,usercontroller.usereditprofile);
-router.post('/saveuserprofile',usercontroller.saveuserprofile);
-router.get('/checkout',cartempty,authenticate,usercontroller.checkout);
-router.post('/confirmorder',usercontroller.confirmorder);
-router.get('/confirmation',usercontroller.confirmation);
-router.get('/profile/myorders',authenticate,usercontroller.myorders);
-router.post('/cancelorder',usercontroller.cancelorder);
-router.post('/addwish',authenticate,usercontroller.addwish);
-router.get('/wishlist',authenticate,usercontroller.wishlist);
-router.get('/removeWishlist/:id',authenticate,usercontroller.removeWishlist)
-router.post('/applycoupon',authenticate,usercontroller.applycoupon);
-router.get('/cancelcoupon',usercontroller.cancelcoupon);
-router.get('/profile/wallet',authenticate,usercontroller.wallet);
-router.post('/addwallet',authenticate,usercontroller.addwallet);
-router.get('/specialoffers',usercontroller.specialoffers);
-router.get('/logout',usercontroller.logout);
-
+router.get('/login',userController.login);
+router.post('/login',middleware.isitblocked,userController.loginPost);
+router.get('/signup',userController.signup);
+router.post('/signup',userController.signupPost);
+router.get('/home',userController.home);
+router.get('/forgotpass',userController.forgotpass);
+router.post('/sendotp',otpController.forgotpasspost);
+router.get('/resendotp/:email',otpController.resend);
+router.get('/otpexpired/:email',otpController.otpexpired);
+router.post('/confirmotp/:email',otpController.confirmotp);
+router.post('/changepass/:email',otpController.changepass);
+router.get('/category/:id',userController.categoryPage);
+router.get('/productpage/:id',userController.product_page);
+router.post('/searchfromuser',userController.search_product);
+router.get('/cart',middleware.authenticate,cartController.cart);
+router.get('/addcart/:id',middleware.authenticate,cartController.addcart);
+router.get('/removecart/:id',cartController.removeproduct);
+router.post('/addqty',cartController.addQty);
+router.post('/subqty',cartController.subQty);
+router.get('/clearcart',cartController.clearCart)
+router.get('/profile',middleware.authenticate,profileController.profile)
+router.get('/profile/address',middleware.authenticate,profileController.profileaddress);
+router.post('/addAddress',profileController.addAddress)
+router.post('/updatedefaultaddress',profileController.updatedefaultaddress);
+router.get('/deleteaddress/:id',profileController.deleteAddress);
+router.get('/usereditprofile',middleware.authenticate,profileController.usereditprofile);
+router.post('/saveuserprofile',profileController.saveuserprofile);
+router.get('/checkout',middleware.cartempty,middleware.authenticate,checkoutController.checkout);
+router.post('/confirmorder',checkoutController.confirmorder);
+router.get('/confirmation',checkoutController.confirmation);
+router.get('/profile/myorders',middleware.authenticate,profileController.myorders);
+router.post('/cancelorder',profileController.cancelorder);
+router.post('/addwish',middleware.authenticate,wishlistController.addwish);
+router.get('/wishlist',middleware.authenticate,wishlistController.wishlist);
+router.get('/removeWishlist/:id',middleware.authenticate,wishlistController.removeWishlist)
+router.post('/applycoupon',middleware.authenticate,couponController.applycoupon);
+router.get('/cancelcoupon',couponController.cancelcoupon);
+router.get('/profile/wallet',middleware.authenticate,profileController.wallet);
+router.post('/addwallet',middleware.authenticate,profileController.addwallet);
+router.get('/specialoffers',userController.specialoffers);
+router.get('/logout',userController.logout);
 
 
 module.exports= router;
