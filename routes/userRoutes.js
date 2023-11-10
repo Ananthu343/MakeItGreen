@@ -83,6 +83,7 @@ router.post('/addwish',authenticate,usercontroller.addwish);
 router.get('/wishlist',authenticate,usercontroller.wishlist);
 router.get('/removeWishlist/:id',authenticate,usercontroller.removeWishlist)
 router.post('/applycoupon',authenticate,usercontroller.applycoupon);
+router.get('/cancelcoupon',usercontroller.cancelcoupon);
 router.get('/profile/wallet',authenticate,usercontroller.wallet);
 router.post('/addwallet',authenticate,usercontroller.addwallet);
 router.get('/specialoffers',usercontroller.specialoffers);

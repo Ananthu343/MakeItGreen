@@ -909,6 +909,15 @@ const applycoupon = async (req, res) => {
 
 }
 
+const cancelcoupon = async(req,res)=>{
+  try {
+    await cartcollection.updateOne({ userid: req.session.user }, { $unset: { discount: "" } });
+    res.status(200).json({cancel : "done"});
+  } catch (error) {
+    console.log('Error in canceling coupn');
+  }
+}
+
 const wallet = async (req, res) => {
   const user = req.session.user;
   const logstatus = user ? "logout" : "login";
@@ -1029,5 +1038,6 @@ module.exports = {
   applycoupon,
   wallet,
   addwallet,
-  specialoffers
+  specialoffers,
+  cancelcoupon
 }

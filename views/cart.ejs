@@ -193,7 +193,8 @@
             </div>
             <div style="display: flex;">
                 <input type="text" placeholder="Apply coupon" id="couponcode">
-                <button type="submit" class="btn btn-success" onclick="coupon()">Apply</button>
+                <button type="submit" class="btn btn-success" id="coupon" onclick="coupon()">Apply</button>
+                <!-- <button id="cancelcoupon" onclick="cancelcoupon()" ></button> -->
             </div>
             <p id="err" style="color: green; margin-top: 10px;"></p>
 
@@ -315,8 +316,10 @@
             });
         });
 
-
+       
         function coupon() {
+            const couponfunction = document.getElementById('coupon');
+            if (couponfunction.textContent == "Apply") {
             const couponcode = document.getElementById('couponcode').value;
             const err = document.getElementById("err");
             const amount = "<%= sum_subtotal %>";
@@ -340,14 +343,32 @@
                             console.log(totalamount);
                             totalAmount.textContent = `Total amount : ${totalamount} /-`;
                             err.textContent = "coupon applies!!! your saved Rs :"+ discountval ;
+                            couponfunction.textContent = "Cancel";
                         }
                     })
 
                     .catch((error) => {
                         console.error('Error:', error);
                     });
+            } else if(couponfunction.textContent == "Cancel"){
+                fetch('/cancelcoupon')
+                .then((response) => response.json())
+                    .then(data => {
+                        console.log(data);
+                        var msg = data.cancel;
+                        
+                        if (msg === "done") {
+                            couponfunction.textContent = "Apply";
+                            window.location.reload();
+                        }
+                    })
+            }
+            
         }
         
+        function cancelcoupon() {
+            
+        }
 
        
     </script>
