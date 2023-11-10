@@ -43,7 +43,7 @@ const loginPost = async (req, res) => {
     if (check.password === req.body.password) {
       req.session.user = req.body.name;
       // console.log(req.session.user);
-      res.redirect('/home');
+      res.redirect('back');
     } else {
       const message = "Incorrect password";
       res.render('userlogin', { message });
@@ -846,12 +846,23 @@ const cancelorder = async (req, res) => {
 const addwish = async (req, res) => {
   const productId = req.body.product_id;
   const user = req.session.user;
-  try {
-    await wishlistcollection.updateOne({ username: user }, { $push: { product_id: productId } }, { upsert: true });
-  } catch (error) {
-    console.log("error in add to wishlist");
-    console.log(error.message);
+  try{
+     const check = await wishlistcollection.aggregate([{$match:{username:user}},{$unwind : "$product_id" },{$match:{product_id : productId}}]);
+     if (check[0]) {
+      res.status(200).json({msg : "found"});
+     } else {
+      try {
+        await wishlistcollection.updateOne({ username: user }, { $push: { product_id: productId } }, { upsert: true });
+        res.status(200).json({msg : "notfound"});
+      } catch (error) {
+        console.log("error in add to wishlist");
+        console.log(error.message);
+      }
+     }
+  }catch(err){
+    console.log(err.message);
   }
+  
 }
 
 const wishlist = async (req, res) => {

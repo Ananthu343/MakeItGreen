@@ -281,14 +281,39 @@
           headers: {
             "Content-Type": "application/json",
           },
-        }).then((res) => {
-          // console.log(res);
-          return window.location.reload()
-  
+        })
+        .then((response) => response.json())
+        .then(data => {
+                   const msg = data.msg; 
+                   if(msg == "found"){
+                    alert("Already wished !!");
+                   }      
         })
       }
     </script>
 
+<script>
+  window.addEventListener('scroll', () => {
+    localStorage.setItem('scrollPosition', window.scrollY);
+  });
+
+  window.addEventListener('beforeunload', () => {
+    localStorage.setItem('scrollPosition', window.scrollY);
+  });
+
+
+  window.addEventListener('load', () => {
+    const savedScrollPosition = localStorage.getItem('scrollPosition');
+    if (savedScrollPosition) {
+      document.documentElement.scrollTop = savedScrollPosition;
+      // For older browsers, use the following line instead:
+      // document.body.scrollTop = savedScrollPosition;
+    }
+  });
+
+
+
+</script>
 
 </body>
 

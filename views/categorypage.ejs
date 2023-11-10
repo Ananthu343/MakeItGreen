@@ -339,10 +339,13 @@
         headers: {
           "Content-Type": "application/json",
         },
-      }).then((res) => {
-        // console.log(res);
-        return window.location.reload()
-
+      })
+      .then((response) => response.json())
+      .then(data => {
+                 const msg = data.msg; 
+                 if(msg == "found"){
+                  alert("Already wished !!");
+                 }      
       })
     }
   </script>
