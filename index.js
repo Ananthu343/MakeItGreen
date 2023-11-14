@@ -3,23 +3,15 @@ const app = express();
 const session = require('express-session')
 const nocache = require('nocache');
 const multer = require('multer')
-
-
-
-
 require('dotenv').config();
-const secretkey =  process.env.SECRET_KEY;
-
-
 const userrouter = require('./routes/userRoutes');
 const adminrouter = require('./routes/adminRoutes');
 
+const secretkey =  process.env.SECRET_KEY;
 
 app.use(express.json());
 app.set('view engine','ejs');
 app.use(express.static('public'));
-
-
 app.use(express.urlencoded({extended:true}));
 app.use(nocache());
 
@@ -34,8 +26,8 @@ const fileStorage = multer.diskStorage({
       },
 })
 
-
 const filterFile =  (req,file,callback) =>{
+
     if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg'){
         callback(null,true);
         console.log("filter passed");
@@ -46,17 +38,12 @@ const filterFile =  (req,file,callback) =>{
     }
 }
 
-
 app.use(multer({storage :fileStorage,fileFilter: filterFile}).array('imgfile', 4))
-
-
-
 app.use(session({
     secret: secretkey,
     resave: false,
     saveUninitialized: true
 }));
-
 app.use("/",userrouter)
 app.use("/",adminrouter)
 
