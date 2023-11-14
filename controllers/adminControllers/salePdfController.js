@@ -1,10 +1,7 @@
 const exceljs = require('exceljs');
-
 const ordercollection = require('../../models/orderdb');
 
-
 const sale_report = async (req, res) => {
-
     try {
         const orderData = await ordercollection.find();
         let productname =[]
@@ -22,7 +19,6 @@ const sale_report = async (req, res) => {
                   date.push(val.created_at??"null");
             }      
         })
-        console.log(date);
         const salesData = productname.map((value, index) => ({
             product: value,
             price: price[index],
@@ -30,14 +26,9 @@ const sale_report = async (req, res) => {
             date: date[index],
             address: address[index]
         }));
-        // const salesData = [
-        //     { date: '2023-01-01', product: 'Product A', quantity: 10, price: 20 },
-        //     { date: '2023-01-02', product: 'Product B', quantity: 15, price: 25 },
-        // ];
         // Create a new workbook and add a worksheet
         const workbook = new exceljs.Workbook();
         const worksheet = workbook.addWorksheet('Sales Report');
-    
         // Define columns and headers
         worksheet.columns = [
             { header: 'Date', key: 'date', width: 15 },
@@ -46,16 +37,13 @@ const sale_report = async (req, res) => {
             { header: 'Price', key: 'price', width: 15 },
             { header: 'Address', key: 'address', width: 30 }, 
         ];
-    
         // Add data to the worksheet
         salesData.forEach((sale) => {
             worksheet.addRow(sale);
         });
-    
         // Set up response headers
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=sales-report.xlsx');
-    
         // Write the workbook to the response
         workbook.xlsx.write(res)
             .then(() => {
@@ -67,6 +55,7 @@ const sale_report = async (req, res) => {
             });
     } catch (error) {
         console.log(error.message);
+        console.log("error in downloading excel");
     }
 };
 

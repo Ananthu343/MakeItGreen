@@ -13,7 +13,6 @@ const keyId = process.env.RAZORPAY_ID_KEY;
 const secretkey = process.env.RAZORPAY_SECRET_KEY;
 
 const checkout = async (req, res) => {
-    console.log('workkk');
     const logstatus = req.session.user ? "logout" : "login";
     const user = req.session.user;
     
@@ -27,25 +26,21 @@ const checkout = async (req, res) => {
       sum_subtotal = sum_subtotal[0].sum;
       const shippingFee = 40;
       let totalAmount = sum_subtotal + shippingFee;
+
       if (discountval) {
         totalAmount = totalAmount - discountval;
       }
-  
       let userdata = await usercollection.find({ name: req.session.user });
       userdata = userdata[0];
       const addressdata = await addresscollection.find({ username: user });
       res.render('checkout', { logstatus, addressdata, userdata, totalQty, totalAmount, shippingFee, sum_subtotal, discountval, cat_data });
-  
-  
     } catch (error) {
       console.log("error in checkout");
       console.log(error.message);
     }
-  
   }
   
   const confirmorder = async (req, res) => {
-    console.log(req.body);
     const min = 1000000;
     const max = 9999999;
     const ordernumber = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -54,6 +49,7 @@ const checkout = async (req, res) => {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     let newday = day + 5;
+
     if (day ==26) {
       newday = 1;
     }else if (day==27) {
@@ -80,20 +76,19 @@ const checkout = async (req, res) => {
       products_img = products_img.map((value) => {
         return value.image_url[0];
       })
-      // console.log(products_img);
+      
       products_name = products_name.map((value) => {
         return value.productname;
       })
-      // console.log(products_name);
+     
       products_qty = products_qty.map((value) => {
         return value.quantity;
       })
-      // console.log(products_qty);
+      
       products_subtotal = products_subtotal.map((value) => {
         return value.subtotal;
       })
-      // console.log(products_subtotal);
-  
+      
       const orderdata = {
         userid: req.session.user,
         orderid: ordernumber,
@@ -107,7 +102,7 @@ const checkout = async (req, res) => {
         subtotal: products_subtotal,
         quantity: products_qty
       }
-      // console.log(orderdata);
+      
       if (orderdata.paymentMode == "COD") {
         res.json({ message: 'COD' });
       } else if (orderdata.paymentMode == "ONLINE") {
@@ -145,11 +140,12 @@ const checkout = async (req, res) => {
         } catch (error) {
           console.log("error in using wallet purchase");
           console.log(error.message);
-        }
-        
+        } 
       }
+      
       if (flag == true) {
         await ordercollection.insertMany([orderdata])
+
       // Stock managing
       try {
         for (let i = 0; i < products_name.length; i++) {
@@ -166,7 +162,6 @@ const checkout = async (req, res) => {
       }
       await cartcollection.deleteMany({ userid: req.session.user });
       }
-      
     } catch (error) {
       console.log("Error in adding order db");
       console.log(error.message);
@@ -178,8 +173,6 @@ const checkout = async (req, res) => {
       const order = await ordercollection.find({ userid: req.session.user });
       const lastElement = order.length - 1;
       const orderid = order[lastElement].orderid;
-      // console.log(order);
-      // console.log(orderid);
       res.render('orderconfirmpage', { orderid: orderid });
     } catch (error) {
       console.log(error.message);

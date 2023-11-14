@@ -3,47 +3,34 @@ const ordercollection = require('../../models/orderdb');
 
 const adlogin = (req, res) => {
     if (req.session.admin) {
-        console.log("admin ond bro");
         res.redirect('/admin/dashboard')
     } else {
-        console.log("no admin");
         res.render('adminlogin', { message: "" })
     }
 }
 
 const adloginpost = (req, res) => {
-    // console.log(req.body.name);
-    const name = 'admin'
+    const name = 'admin';
     const password = 1234
-
     if (name === req.body.name && password == req.body.password) {
-
         //adding session 
         req.session.admin = name;
-
         res.redirect('/admin/dashboard');
     } else {
-        // console.log('here');
-        res.render('adminlogin', { message: 'invalid username or password :(' })
+        res.render('adminlogin', { message: 'invalid username or password :(' });
     }
 }
 
 const dashboard = async (req, res) => {
     try {
         const orderdata = await ordercollection.find();
-
         const dates = orderdata.map((element) => {
-
             return element.expectedBy;
-
         });
-
         let days = dates.map((element) => {
             const dateString = element;
-
             // Split the date string by "/"
             const dateParts = dateString.split("/");
-
             // Extract day, month, and year
             let day = parseInt(dateParts[0], 10);
             day = day - 5;
@@ -61,22 +48,15 @@ const dashboard = async (req, res) => {
                 day = 25;
             }
             return day;
-
         })
         let months = dates.map((element) => {
-
             const dateString = element;
-
             // Split the date string by "/"
             const dateParts = dateString.split("/");
-
             // Extract day, month, and year
             const month = parseInt(dateParts[1], 10);
             return month;
-
         })
-
-
         let quantities = orderdata.map((element) => {
             if (element.status == "Delivered") {
                 const sum = element.quantity.reduce((acc, val) => {
@@ -86,10 +66,7 @@ const dashboard = async (req, res) => {
             } else {
                 return 0;
             }
-
-        })
-
-
+        });
         const result = days.reduce((accumulator, day, index) => {
             if (!accumulator.uniqueDays.includes(day)) {
                 accumulator.uniqueDays.push(day);
@@ -99,10 +76,8 @@ const dashboard = async (req, res) => {
             accumulator.sumQuantities[dayIndex] += quantities[index];
             return accumulator;
         }, { uniqueDays: [], sumQuantities: [] });
-
         days = result.uniqueDays;
         sumQuantitiesPerDay = result.sumQuantities;
-
 
         const uniqueMonths = [];
         const sumQuantitiesPerMonth = [];
@@ -115,12 +90,6 @@ const dashboard = async (req, res) => {
             const monthIndex = uniqueMonths.indexOf(month);
             sumQuantitiesPerMonth[monthIndex] += quantities[index];
         });
-        // console.log(months);
-        console.log(quantities);
-        console.log(uniqueMonths);
-        // console.log(days);
-        // console.log(quantities);
-        console.log(sumQuantitiesPerMonth);
 
         res.render('dashboard', { sumQuantitiesPerDay, days, uniqueMonths, sumQuantitiesPerMonth });
     } catch (error) {
@@ -130,7 +99,6 @@ const dashboard = async (req, res) => {
 };
 
 const adlogout = (req, res) => {
-    console.log("logged out session destroyed");
     req.session.destroy(() => {
         res.redirect("/adminlogin");
     })

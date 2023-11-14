@@ -2,18 +2,16 @@ const usercollection = require('../../models/userdb');
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
 const { render } = require('ejs');
-
 const { json } = require('express');
 
 const myemail = process.env.MY_EMAIL;
 const mypass = process.env.MY_PASS;
 
-
 const forgotpasspost = async (req, res) => {
     try {
       const check = await usercollection.findOne({ email: req.body.email });
+
       if (check) {
-  
         const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
         await usercollection.updateOne({ email: req.body.email }, { otp: otp, otpExpires: 1 });
         const transporter = nodemailer.createTransport({
@@ -42,14 +40,12 @@ const forgotpasspost = async (req, res) => {
         try {
           const data = await usercollection.findOne({ email: req.body.email })
           console.log(data);
-          console.log("hehehe");
           const expirationTime = data.otpExpires;
           res.render('otpPage', { message: "", email: req.body.email, expirationTime, currentsec: 59 });
   
         } catch (error) {
           console.log("error in searching expiretime");
         }
-  
       } else {
         res.render('forgotpass', { message: "no user with this id!!" })
       }
@@ -59,15 +55,9 @@ const forgotpasspost = async (req, res) => {
   }
   
   const resend = async (req, res) => {
-  
-    console.log(req.params);
     const useremail = req.params.email
   
     try {
-      // const date = new Date();
-      // const expiretime = new Date().getTime() + 3 * 60 * 1000;
-      // console.log(expiretime);
-  
       const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
       await usercollection.updateOne({ email: useremail }, { otp: otp, otpExpires: 1 });
       const transporter = nodemailer.createTransport({
@@ -107,39 +97,27 @@ const forgotpasspost = async (req, res) => {
     } catch (error) {
       console.log(error.message);
     }
-  
   }
   
   const otpexpired = async (req, res) => {
     console.log(req.params);
     try {
       await usercollection.updateOne({ email: req.params.email }, { $unset: { otp: "", otpExpires: "" } });
-      console.log("otp expired");
       res.render('otpPage', { message: "", email: req.params.email, expirationTime: -1, currentsec: -1 });
-  
-  
       const data = await usercollection.findOne({ email: req.params.email })
-      console.log(data);
       const expirationTime = data.otpExpires;
       console.log(expirationTime);
-  
     } catch (error) {
-  
+      console.log(error.message);
     }
   }
   
   const confirmotp = async (req, res) => {
     try {
-      // console.log(req.query);
-      console.log(req.body);
-      console.log(req.params);
       const data = await usercollection.findOne({ email: req.params.email })
-      // console.log(data);
       const db_otp = data.otp;
       const user_otp = req.body.otp
-      console.log("confirm aayi");
-      console.log(db_otp);
-      console.log(user_otp);
+  
       if (db_otp == user_otp) {
         try {
           await usercollection.updateOne({ email: req.params.email }, { $unset: { otp: "", otpExpires: "" } });
@@ -147,24 +125,18 @@ const forgotpasspost = async (req, res) => {
         } catch (error) {
           console.log(error.message);
         }
-  
       } else {
-  
         res.render('otpPage', { message: "Invalid otp", email: req.params.email, expirationTime: req.body.min, currentsec: req.body.sec });
-        console.log(data);
-  
       }
     } catch (error) {
       console.log(error.message);
     }
-  
   }
   
   const changepass = async (req, res) => {
-    // console.log(req.params);
-    console.log("change pass");
     const pass = req.body.password;
     const conpass = req.body.conpassword;
+    
     if (pass === conpass) {
       try {
         await usercollection.updateOne({ email: req.params.email }, { $set: { password: pass } });
@@ -172,7 +144,6 @@ const forgotpasspost = async (req, res) => {
       } catch (error) {
         console.log(error.message);
       }
-  
     } else {
       res.render('changepass', { message: "password didn't match", email: req.params.email });
     }

@@ -1,5 +1,4 @@
 const PDFDocument = require('pdfkit');
-
 const ordercollection = require('../models/orderdb');
 
 const downloadInvoice = async (req, res) => {
@@ -82,7 +81,6 @@ const generateAndDownloadInvoice = async (orderId, res) => {
 
 
 const saveinvoice = async (req,res) =>{
-    console.log(req.body);
     const payId = req.body.paymentId;
     const orderId = req.body.order_id;
     const orderNum = req.body.orderNumber;

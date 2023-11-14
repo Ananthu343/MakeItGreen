@@ -3,7 +3,6 @@ const cartcollection = require('../../models/cartdb');
 const { json } = require('express');
 const couponCollection = require('../../models/coupondb');
 
-
 const applycoupon = async (req, res) => {
     const code = req.body.couponcode;
     const purcahseAmount = req.body.amount;
@@ -21,13 +20,11 @@ const applycoupon = async (req, res) => {
       }else{
         res.status(200).json({ value: "minAmountRequired" });
       }
-      
     } catch (error) {
       res.status(200).json({ value: "null" });
-      console.log('coupon apply failed');
-      console.log(error.message);
+      // console.log('coupon apply failed');
+      // console.log(error.message);
     }
-  
   }
   
   const cancelcoupon = async(req,res)=>{

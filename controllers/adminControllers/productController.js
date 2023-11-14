@@ -2,13 +2,10 @@ const categorycollection = require('../../models/categorydb');
 const productcollection = require('../../models/productdb');
 const offercollection = require('../../models/offerdb');
 
-
 const product_manage = async (req, res) => {
     try {
         const fulldata = await productcollection.find();
         const catedata = await categorycollection.find();
-        console.log(catedata);
-        // res.render('productmanagement');
         res.render('productmanagement', { fulldata, product_data: "", catedata });
     } catch (error) {
         console.log("error loading product data");
@@ -16,8 +13,6 @@ const product_manage = async (req, res) => {
 }
 
 const add_product = async (req, res) => {
-    // console.log(req.body);
-    console.log(req.file);
     let imagePath = [];
     const imgarray = req.files
     imgarray.forEach(element => {
@@ -27,9 +22,6 @@ const add_product = async (req, res) => {
             imagePath.push("");
         }
     });
-
-    console.log(imagePath);
-
     const newimagepath = imagePath.map((path) => {
         if (path.includes('public\\')) {
             return path.substring(6);
@@ -37,8 +29,6 @@ const add_product = async (req, res) => {
             return path.substring(6);
         }
     })
-
-    console.log(newimagepath);
     const product_data = {
         name: req.body.product,
         price: req.body.price,
@@ -48,14 +38,11 @@ const add_product = async (req, res) => {
         category: req.body.categoryid,
         images: newimagepath
     }
-    console.log(product_data);
     try {
         await productcollection.insertMany([product_data]);
         try {
             let productid = await productcollection.find({ name: product_data.name });
-            // console.log(productid);
             productid = productid[0]._id;
-
             const offerpercent = req.body.offer;
             const originalPrice = req.body.price;
             const discountAmount = (originalPrice * offerpercent) / 100;
@@ -74,16 +61,14 @@ const add_product = async (req, res) => {
 
 const search_product = async (req, res) => {
     const productname = req.body.searchid;
-    console.log(productname);
     try {
         const search_data = await productcollection.find({ name: productname });
         const data = await productcollection.find();
         const cate_names = await categorycollection.distinct('name');
         if (search_data) {
-            res.render('productmanagement', { product_data: search_data, fulldata: data, cate_names })
+            res.render('productmanagement', { product_data: search_data, fulldata: data, cate_names });
         } else {
-            res.render('productmanagement', { fulldata: data, product_data: "", cate_names })
-
+            res.render('productmanagement', { fulldata: data, product_data: "", cate_names });
         }
     } catch (error) {
         console.log("error fetching searchdata");
@@ -105,12 +90,10 @@ const edit_product = async (req, res) => {
     let data = await productcollection.find({ _id: product_id });
     data = data[0];
     const catedata = await categorycollection.find();
-    //  console.log(data);
     res.render('product_edit', { data, catedata });
 }
 
 const delete_image = async (req, res) => {
-    console.log(req.params);
     const productid = req.params.id;
     const index = req.params.index;
     try {
@@ -126,7 +109,6 @@ const delete_image = async (req, res) => {
 
 const update_product = async (req, res) => {
     const product_id = req.params.id;
-    console.log(req.body);
     let imagePath = [];
     const imgarray = req.files
     imgarray.forEach(element => {
@@ -143,8 +125,6 @@ const update_product = async (req, res) => {
             return path.substring(6);
         }
     })
-
-    console.log(newimagepath);
     const product_data = {
         name: req.body.product,
         price: req.body.price,
@@ -157,7 +137,6 @@ const update_product = async (req, res) => {
     const originalPrice = req.body.price;
     const discountAmount = (originalPrice * offerpercent) / 100;
     const offerPrice = parseInt(originalPrice - discountAmount);
-
     try {
         await offercollection.updateOne({ productid: product_id }, { $set: { offerPercent: offerpercent, offerPrice: offerPrice } }, { upsert: true });
         await productcollection.updateOne({ _id: product_id }, { $set: product_data }, { upsert: true })

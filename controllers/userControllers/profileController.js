@@ -15,35 +15,28 @@ const secretkey = process.env.RAZORPAY_SECRET_KEY;
 const profile = async (req, res) => {
     const username = req.session.user;
     const logstatus = req.session.user ? "logout" : "login";
-    console.log(username);
     try {
       const cat_data = await categorycollection.find();
       let userdata = await usercollection.find({ name: username });
-      // console.log(userdata);
       userdata = userdata[0];
       res.render('userprofile', { logstatus, userdata, cat_data });
     } catch (error) {
       console.log("error log profile");
     }
-  
   }
   
   const profileaddress = async (req, res) => {
     const logstatus = req.session.user ? "logout" : "login";
-    console.log(req.session.user);
     try {
       const cat_data = await categorycollection.find();
       let userdata = await usercollection.find({ name: req.session.user })
       const addressdata = await addresscollection.find({ username: req.session.user });
       userdata = userdata[0];
-      // console.log(userdata);
       res.render('profileaddress', { logstatus, userdata, addressdata, cat_data })
     } catch (error) {
       console.log(error.message);
     }
   }
-  
-  
   
   const addAddress = async (req, res) => {
     const username = req.session.user;
@@ -57,13 +50,11 @@ const profile = async (req, res) => {
       name: fullname,
       state: req.body.state
     }
-    console.log(data);
     try {
       if (username != undefined) {
         await addresscollection.insertMany([data]);
         res.redirect('back');
       }
-  
     } catch (error) {
       console.log("error adding address");
       console.log(error.message);
@@ -77,7 +68,6 @@ const profile = async (req, res) => {
     try {
       const addressdata = await addresscollection.findById(addressid);
       const fullAddress = addressdata.name + ", " + addressdata.address + ", " + addressdata.city + ", " + addressdata.state + ", " + "Pin code : " + addressdata.pincode + "   Mobile : " + addressdata.phone;
-      console.log(fullAddress);
       await usercollection.updateOne({ name: username }, { $set: { defaultAddress: fullAddress } });
       return res.status(200).send('updation done')
     } catch (error) {
@@ -99,15 +89,13 @@ const profile = async (req, res) => {
   
   const usereditprofile = async (req, res) => {
     const logstatus = req.session.user ? "logout" : "login";
-    // console.log("worked");
     try {
       const cat_data = await categorycollection.find();
       let userdata = await usercollection.find({ name: req.session.user });
       userdata = userdata[0];
-      console.log(userdata);
       res.render('profileEdit', { userdata, logstatus, cat_data })
     } catch (error) {
-  
+      console.log(error.message);
     }
   }
   
@@ -115,7 +103,6 @@ const profile = async (req, res) => {
     const username = req.session.user;
     try {
       let imagePath = req.files[0].path;
-      // console.log(imagePath);
       // Check if the path includes "public/" (Windows uses backslashes)
       if (imagePath.includes('public\\')) {
         // Remove the "public/" prefix for Windows
@@ -130,7 +117,6 @@ const profile = async (req, res) => {
         defaultAddress: req.body.address,
         image_url: imagePath
       }
-      // console.log(newdata);
       await usercollection.updateOne({ name: username }, { $set: newdata });
       res.redirect('/profile');
     } catch (error) {
@@ -148,7 +134,6 @@ const profile = async (req, res) => {
       const orderdata = await ordercollection.find({ userid: user });
       let userdata = await usercollection.find({ name: user })
       userdata = userdata[0];
-      // console.log(orderdata);
       res.render('myorders', { userdata, logstatus, orderdata, productdata, cat_data });
     } catch (error) {
       console.log("error in my orders");
@@ -157,18 +142,14 @@ const profile = async (req, res) => {
   }
   
   const cancelorder = async (req, res) => {
-    // console.log("workeddd");
     const orderid = req.body.id;
-    // console.log(orderid);
     try {
       await ordercollection.updateOne({ _id: orderid }, { $set: { status: "Cancelled" } });
       const orderdata = await ordercollection.findById(orderid);
       try {
-        console.log(orderdata);
         for (let i = 0; i < orderdata.itemsname.length; i++) {
           const product_name = orderdata.itemsname[i];
           const product_data = await productCollection.find({ name: product_name });
-  
           const currentqty = product_data[0].quantity;
           const newQty = currentqty + orderdata.quantity[i];
           await productCollection.updateOne({ name: product_name }, { $set: { quantity: newQty } });
@@ -208,11 +189,9 @@ const profile = async (req, res) => {
       const cat_data = await categorycollection.find();
       let userdata = await usercollection.find({ name: user })
       userdata = userdata[0];
-      // console.log(userdata);
       const userid = userdata._id;
       let wallethistory = await walletcollection.find({ userid: userid });
       wallethistory = wallethistory[0];
-      // console.log(wallethistory);
       res.render('mywallet', { logstatus, userdata, wallethistory, cat_data });
     } catch (error) {
       console.log("error in mywallet");
@@ -226,13 +205,14 @@ const profile = async (req, res) => {
       const user = req.session.user;
       let userid = await usercollection.find({ name: user }, { _id: 1 });
       userid = userid[0]._id;
-      let newAmt = amount
+      let newAmt = amount;
       try {
         let currentamt = await walletcollection.find({ userid: userid }, { balance: 1, _id: 0 });
         currentamt = currentamt[0].balance;
         newAmt = currentamt + amount;
       } catch (error) {
         console.log("new user wallet");
+        console.log(error.message);
       }
       const date = new Date();
       const day = date.getDate();
