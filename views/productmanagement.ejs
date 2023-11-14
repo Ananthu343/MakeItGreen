@@ -291,19 +291,19 @@
                         <div class="product-form-innerdiv">
                             <div>
                                 <label for="product">Product name:</label>
-                                <input type="text" id="product" name="product">
+                                <input type="text" id="product" name="product" required>
                             </div>
                             <div>
                                 <label for="price">Price:</label>
-                                <input type="text" id="price" name="price">
+                                <input type="text" id="price" name="price" required>
                             </div>
                             <div>
                                 <label for="quantity">Quantity:</label>
-                                <input type="text" id="quantity" name="quantity">
+                                <input type="text" id="quantity" name="quantity" required>
                             </div>
                             <div>
                                 <label for="offer">Offer:(0 for no offer)</label>
-                                <input type="text" id="offer" name="offer">
+                                <input type="text" id="offer" name="offer" value="0" required>
                             </div>
                             <div class="col-md">
                                 <label for="categoryid">Select a category:</label>
@@ -316,12 +316,12 @@
                             <div>
                                 <label for="description">Description:</label>
                                 <textarea id="description" name="description" class="form-control" placeholder="Write your message here."
-                                    rows="4" required="required" data-error="Please, leave us a message."></textarea>
+                                    rows="4" required="required" data-error="Please, leave us a message." required></textarea>
                             </div>
                             <div>
                                 <label for="imgfile" class="mb-3">
                                     <span>Select Images:</span>
-                                    <input type="file" id="imageInput" name="imgfile" multiple accept="image/jpeg , image/png">
+                                    <input type="file" id="imageInput" name="imgfile" multiple accept="image/jpeg , image/png" required>
                                     <div id="imagePreview"></div>
                                     <button id="cropButton" type="button">Crop</button>
                                 </label>

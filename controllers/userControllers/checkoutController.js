@@ -7,7 +7,10 @@ const addresscollection = require('../../models/addressdb');
 const ordercollection = require('../../models/orderdb');
 const walletcollection = require('../../models/walletdb');
 const { json } = require('express');
+const Razorpay = require('razorpay');
 
+const keyId = process.env.RAZORPAY_ID_KEY;
+const secretkey = process.env.RAZORPAY_SECRET_KEY;
 
 const checkout = async (req, res) => {
     console.log('workkk');
@@ -119,6 +122,7 @@ const checkout = async (req, res) => {
           message: "ONLINE",
           order,
           amount,
+          ordernumber
         })
       } else if (orderdata.paymentMode == "WALLET") {
         let amount = req.body.amount;

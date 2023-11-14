@@ -8,6 +8,7 @@ const couponController = require('../controllers/adminControllers/couponControll
 const orderController = require('../controllers/adminControllers/orderController');
 const productController = require('../controllers/adminControllers/productController');
 const userManage = require('../controllers/adminControllers/userManage');
+const salePdfController = require('../controllers/adminControllers/salePdfController');
 
 
 function authenticate(req, res, next) {
@@ -49,6 +50,7 @@ router.get('/deletebanner/:id',authenticate,bannerController.delete_banner);
 router.get('/admin/couponmanagement',authenticate,couponController.coupon_manage);
 router.post('/addcoupon',authenticate,couponController.add_coupon);
 router.get('/deletecoupon/:id',authenticate,couponController.delete_coupon);
+router.get('/download-sales-report',authenticate,salePdfController.sale_report);
 
 
 module.exports= router;

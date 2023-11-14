@@ -131,7 +131,10 @@
         <div class="main-content">
             <div class="view-table">
                 <div class="dashboard-chart-container">
-                    <h4>Sale chart</h4>
+                    <div style="display: flex; width: 800px; justify-content: space-around;">
+                        <h4>Sale chart</h4>
+                        <a href="/download-sales-report">Print report</a>
+                    </div>
                     <canvas id="myLineChart" width="400" height="200"></canvas>
                 </div>
                 <div class="dashboard-chart-container">
@@ -301,10 +304,6 @@ const myBarChart = new Chart(barctx, barchartData);
 </script>
 
         
-        
-
-    </script>
-
 </body>
 
 </html>

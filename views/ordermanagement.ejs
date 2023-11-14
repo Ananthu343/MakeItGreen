@@ -187,6 +187,12 @@
                                     <p style="width: 800px; margin-top: 20px;"> <b>Shipping to : </b>
                                         <%= item.shippingAddress %>
                                     </p>
+                                    <div style="width: 500px; display: flex; justify-content: space-evenly;">
+                                        <p >Payment mode : <b> <%= item.paymentMode %></b></p>
+                                        <% if(item.paymentMode == "ONLINE"){ %>
+                                          <a href="/downloadInvoice/<%= item.id %>">Download invoice</a>
+                                       <% } %>
+                                    </div>
                         </div>
                         <% }) %>
                 </div>

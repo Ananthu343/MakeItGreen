@@ -328,7 +328,7 @@
                                         window.location.href = '/confirmation'; // Replace with the URL of the new page
                                     } else if (data.message == "ONLINE") {
                                         
-                                           
+                                        const ordernumber = data.ordernumber;
                                         console.log(data.order);
                                         const id = data.order.id;
                                         var options = {
@@ -339,10 +339,20 @@
                                             "order_id":  id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                                             "handler": function (response) {
                                                 window.location.href = '/profile/myorders';
-                                                alert(response.razorpay_payment_id);
-                                                alert(response.razorpay_order_id);
-                                                alert(response.razorpay_signature)
-                                                
+                                                // alert(response.razorpay_payment_id);
+                                                // alert(response.razorpay_order_id);
+                                                const invoicedata = {
+                                                    paymentId : response.razorpay_payment_id,
+                                                    order_id : response.razorpay_order_id,
+                                                    orderNumber : ordernumber
+                                                }
+                                                fetch('/invoicesave', {
+                                                  method: 'POST',
+                                                  headers: {
+                                                  'Content-Type': 'application/json',
+                                                  },
+                                                  body: JSON.stringify(invoicedata),
+                                                  })
                                             },
             
                                         };

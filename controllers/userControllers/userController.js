@@ -100,13 +100,14 @@ const login = (req, res) => {
     const logstatus = req.session.user ? "logout" : "login";
     console.log(req.params.id)
     try {
+      const banner_data = await bannercollection.find();
       const offerdata = await offercollection.find();
       const category = await categorycollection.findById(req.params.id)
       const fulldata = await productCollection.find({ category: category.id });
       // console.log(offerdata);
       console.log(fulldata);
       const cat_data = await categorycollection.find();
-      res.render('categorypage', { fulldata, logstatus, offerdata, cat_data });
+      res.render('categorypage', { fulldata, logstatus, offerdata, cat_data,bannerdata: banner_data });
       // console.log(category);
     } catch (error) {
       console.log("error loading category page");
@@ -120,13 +121,14 @@ const login = (req, res) => {
     const logstatus = req.session.user ? "logout" : "login";
     const product_id = req.params.id;
     try {
+      const offerdata = await offercollection.find();
       const product_details = await productCollection.find({ _id: product_id });
       const product_data = product_details[0];
       console.log(product_data);
       const image_data = product_data.images;
       const cat_data = await categorycollection.find();
       // console.log(image_data);
-      res.render('productpage', { product_data, image_data, logstatus, cat_data });
+      res.render('productpage', { product_data, image_data, logstatus, cat_data, offerdata });
     } catch (error) {
       console.log("error loading productpage");
       console.log(error.message);

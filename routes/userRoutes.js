@@ -9,6 +9,8 @@ const couponController = require('../controllers/userControllers/couponControlle
 const otpController = require('../controllers/userControllers/otpController');
 const profileController = require('../controllers/userControllers/profileController');
 const wishlistController = require('../controllers/userControllers/wishlistController');
+const invoiceController = require('../controllers/invoiceController');
+
 
 
 router.get('/login',userController.login);
@@ -51,6 +53,8 @@ router.get('/cancelcoupon',couponController.cancelcoupon);
 router.get('/profile/wallet',middleware.authenticate,profileController.wallet);
 router.post('/addwallet',middleware.authenticate,profileController.addwallet);
 router.get('/specialoffers',userController.specialoffers);
+router.post('/invoicesave',invoiceController.saveinvoice);
+router.get('/downloadInvoice/:id',invoiceController.downloadInvoice);
 router.get('/logout',userController.logout);
 
 

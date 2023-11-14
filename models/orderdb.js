@@ -46,6 +46,17 @@ const orderSchema = new mongoose.Schema({
         type :Number,
         required : true
     }],
+    invoice :{
+        paymentId : {
+            type : String,
+            required : false
+        
+        },
+        orderId : {
+            type : String,
+            required : false
+        }
+    }
 });
 
 const ordercollection = new mongoose.model("ordercollection",orderSchema);//creating collection
