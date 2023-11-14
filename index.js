@@ -46,7 +46,9 @@ app.use(session({
 }));
 app.use("/",userrouter)
 app.use("/",adminrouter)
-
+app.use("*",(req,res)=>{
+    res.render('404page');
+})
 
 app.listen(3000,()=>{
     console.log("Server running");
