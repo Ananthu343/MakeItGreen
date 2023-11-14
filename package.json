@@ -4,7 +4,7 @@
   "description": "first mini project",
   "main": "app.js",
   "scripts": {
-    "start": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js"
   },
   "author": "Ananthu A P",
   "license": "ISC",
