@@ -59,8 +59,8 @@ const login = (req, res) => {
   
   const signupPost = async (req, res) => {
     const check = await usercollection.find({ name: req.body.name });
-
-    if (check) {
+    console.log(check);
+    if (check[0]) {
       const message = "Username not accepted!";
       res.render('usersignup', { message });
     } else {
