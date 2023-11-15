@@ -108,6 +108,7 @@
     </div>
     <div class="cart-main-container">
         <div class="cart-sub-container ">
+            <% if(wishlistdata[0]){ %>
             <div class="cart-table shadow p-3 mb-5 bg-body rounded">
                 <table class="table " style="background-color: #D9D9D9;">
                     <thead>
@@ -156,6 +157,12 @@
                     </tbody>
                 </table>
             </div>
+            <% }else{ %>
+                    
+                <h2 style="color: black;">No wishes !!</h2>
+           
+           
+            <% } %>
             
         </div>
         

@@ -157,6 +157,7 @@
 
 
                     <div class="Customer-order-profile">
+                        <% if(orderdata[0]){ %>
                         <h3><u>Order history</u></h3>
                         <% orderdata.reverse().forEach((item)=>{ %>
                         <div class="order-container">
@@ -185,6 +186,12 @@
                             </div>
                         </div>
                         <% }) %>
+                        <% }else{ %>
+                    
+                            <h2 style="color: black;">Shop now!!</h2>
+                       
+                       
+                        <% } %>
                     </div>
 
 

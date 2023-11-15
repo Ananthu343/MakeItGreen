@@ -120,9 +120,10 @@ const login = (req, res) => {
     const logstatus = req.session.user ? "logout" : "login";
     const product_name = req.body.productname;
     try {
+      const banner_data = await bannercollection.find();
       const fulldata = await productCollection.find({ name: product_name });
       const cat_data = await categorycollection.find();
-      res.render('searchpage', { fulldata, logstatus ,cat_data});
+      res.render('searchpage', { fulldata, logstatus ,cat_data,bannerdata: banner_data});
     } catch (error) {
       console.log(error.message);
     }

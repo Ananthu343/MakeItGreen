@@ -108,7 +108,9 @@
     </div>
     <div class="cart-main-container">
         <div class="cart-sub-container ">
+           
             <div class="cart-table shadow p-3 mb-5 bg-body rounded">
+                <% if(cartdata[0]){ %>
                 <table class="table " style="background-color: #D9D9D9;">
                     <thead>
                         <tr>
@@ -121,6 +123,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        
                         <% cartdata.forEach((item)=>{ %>
 
                             <tr style="background-color: white;height: 100px;">
@@ -171,9 +174,15 @@
                                 </td>
                             </tr>
                             <% }) %>
-
+                           
                     </tbody>
                 </table>
+                <% }else{ %>
+                    
+                        <h2 style="color: black;">Shop now!!</h2>
+                   
+                   
+                    <% } %>
             </div>
             <div class="cart-subtotal-container">
                 <div class="cart-subtotal">
