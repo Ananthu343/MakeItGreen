@@ -42,6 +42,7 @@ router.get('/usereditprofile',middleware.authenticate,profileController.useredit
 router.post('/saveuserprofile',profileController.saveuserprofile);
 router.get('/checkout',middleware.cartempty,middleware.authenticate,checkoutController.checkout);
 router.post('/confirmorder',checkoutController.confirmorder);
+router.post('/placenow',checkoutController.placenow);
 router.get('/confirmation',checkoutController.confirmation);
 router.get('/profile/myorders',middleware.authenticate,profileController.myorders);
 router.post('/cancelorder',profileController.cancelorder);

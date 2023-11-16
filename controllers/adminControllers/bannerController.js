@@ -49,7 +49,9 @@ const edit_banner = async(req,res)=>{
 
 const update_banner = async (req,res)=>{
     const banner_id = req.params.id;
-    let imagePath = req.files[0].path;
+    let imagePath ;
+    if(req.files[0]){
+         imagePath = req.files[0].path;
         // Check if the path includes "public/" (Windows uses backslashes)
         if (imagePath.includes('public\\')) {
             // Remove the "public/" prefix for Windows
@@ -58,6 +60,11 @@ const update_banner = async (req,res)=>{
             // Remove the "public/" prefix for Unix-like systems
             imagePath = imagePath.replace('public/', '');
         }
+    }else{
+        const bannerdata = await bannercollection.findById(banner_id);
+        imagePath = bannerdata.image_url;
+    }
+    
     const banner_data = {
         name: req.body.bannername,        
         description: req.body.description,

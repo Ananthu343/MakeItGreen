@@ -9,10 +9,8 @@ const { json } = require('express');
 const login = (req, res) => {
     
     if (req.session.user) {
-      console.log("user ond");
       res.redirect('/home');
     } else {
-      console.log("user illa");
       res.render("userlogin", { message: '' });
     }
   };
