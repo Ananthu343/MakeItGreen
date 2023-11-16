@@ -710,3 +710,11 @@ box-shadow: 0 3px 9px 3px #dddddd;
     background-color: #12DB26;
     animation-duration: 1s;
 }
+.hehe {
+    display: none;
+
+}
+  
+  .blur {
+    display: block;
+  }

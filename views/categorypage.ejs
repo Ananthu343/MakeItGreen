@@ -142,7 +142,20 @@
   <div class="product-container">
     <% fulldata.forEach((items)=>{ %>
 
-      <div class="card" style="width: 18rem;">
+      <div class="card" style="width: 18rem; position: relative;">
+        <div class="la hehe" style="position: absolute; z-index: 9; align-self: center;" >
+          <div class="alert alert-primary d-flex align-items-center" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+              class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img"
+              aria-label="Warning:">
+              <path
+                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+            </svg>
+            <div>
+              Already wished !
+            </div>
+          </div>
+        </div>
         <div
           style="width: auto; height: 250px; overflow: hidden; position: relative; display: flex; justify-content: end;">
           <img src="<%= items.images[0] %>" class="card-img-top" alt="...">
@@ -311,9 +324,12 @@
 
   <script>
     const wish = document.querySelectorAll('.wish');
+    const myDiv = document.querySelectorAll('.la');
 
-    wish.forEach((icon) => {
+    let itemIndex;
+    wish.forEach((icon, index) => {
       icon.addEventListener('click', () => {
+        itemIndex = index;
         icon.classList.toggle('wish-default');
         icon.classList.toggle('wish-clicked');
       });
@@ -331,9 +347,14 @@
       .then((response) => response.json())
       .then(data => {
                  const msg = data.msg; 
-                 if(msg == "found"){
-                  alert("Already wished !!");
-                 }      
+                 if (msg == "found") {
+            console.log(itemIndex);
+            console.log(myDiv[itemIndex]);
+            myDiv[itemIndex].classList.add('blur');
+            setTimeout(() => {
+              myDiv[itemIndex].classList.remove('blur');
+            }, 2000);
+          }     
       })
     }
   </script>
